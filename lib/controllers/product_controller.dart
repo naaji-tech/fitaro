@@ -19,8 +19,8 @@ class ProductController extends GetxController {
 
   @override
   void onInit() {
-    fetchProducts();
     super.onInit();
+    fetchProducts();
   }
 
   void addProductData(dynamic data) {
@@ -39,12 +39,12 @@ class ProductController extends GetxController {
     productMeasurementData.clear();
   }
 
-  Future<void> addProductMeasurementsManual() async {
+  Future<void> addProductAndMeasurementsManual() async {
     try {
       logger.i('Adding product and measurements manually...');
       logger.d("Product details: ${productData.toString()}");
       logger.d(
-        "Product measurement data: ${productMeasurementData.toString()}",
+        "Product measurements data: ${productMeasurementData.toString()}",
       );
 
       final res = await http.post(
@@ -83,7 +83,7 @@ class ProductController extends GetxController {
       var resBody2 = json.decode(res.body);
 
       if (res2.statusCode != HttpStatus.created) {
-        logger.e('Failed to add product: ${resBody2.toString()}');
+        logger.e('Failed to add measurements: ${resBody2.toString()}');
         Get.snackbar(
           'Error',
           'Internal error: contact support: mohamednaaji@yahoo.com',
@@ -96,20 +96,20 @@ class ProductController extends GetxController {
 
       Get.snackbar(
         'Success',
-        'Measurements updated successfully',
+        'Product added to Inventory',
         backgroundColor: const Color.fromRGBO(0, 255, 0, 0.3),
         colorText: const Color.fromARGB(255, 0, 0, 0),
         duration: Duration(seconds: 1),
       );
-      logger.i('Product added successfully');
+      logger.i('Adding product and measurements success.');
     } catch (e) {
       logger.e('Exception occurred: $e');
       Get.snackbar(
         'Error',
-        'Failed to load products',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Color.fromRGBO(255, 0, 0, 0.1),
-        colorText: Colors.red,
+        'Internal error: contact support: mohamednaaji@yahoo.com',
+        backgroundColor: const Color.fromRGBO(255, 0, 0, 0.3),
+        colorText: const Color.fromARGB(255, 0, 0, 0),
+        duration: Duration(seconds: 3),
       );
     }
   }
@@ -192,16 +192,9 @@ class ProductController extends GetxController {
       var jsonData = json.decode(response.body);
       productList.assignAll(jsonData["data"]);
 
-      logger.i('Products fetched successfully');
+      logger.i('Fetching products success.');
     } catch (e) {
       logger.e('Exception occurred: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to load products',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Color.fromRGBO(255, 0, 0, 0.1),
-        colorText: Colors.red,
-      );
     } finally {
       isLoading(false);
     }
@@ -209,5 +202,6 @@ class ProductController extends GetxController {
 
   void clearProducts() {
     productList.clear();
+    logger.i("Clear product success.");
   }
 }

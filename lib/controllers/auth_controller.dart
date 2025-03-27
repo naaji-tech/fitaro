@@ -1,22 +1,21 @@
 import 'dart:convert';
 
+import 'package:fitaro/controllers/backend_server_controller.dart';
 import 'package:fitaro/controllers/user_measurement_controller.dart';
 import 'package:fitaro/controllers/product_controller.dart';
-import 'package:fitaro/controllers/size_recom_controller.dart';
+import 'package:fitaro/controllers/recommend_size_controller.dart';
 import 'package:fitaro/logger/log.dart';
 import 'package:get/get.dart';
 import 'user_controller.dart';
 import 'package:flutter/material.dart';
 
 class AuthController extends GetxController {
-  final UserController userController = Get.find<UserController>();
-  final UserMeasurementController measurementController =
-      Get.find<UserMeasurementController>();
-  final SizeRecomController sizeRecomController =
-      Get.find<SizeRecomController>();
-  final ProductController productController = Get.find<ProductController>();
-  final RxBool isLoggedIn = false.obs;
-  final RxBool isSeller = false.obs;
+  final _userController = Get.find<UserController>();
+  final _measurementController = Get.find<UserMeasurementController>();
+  final _sizeRecomController = Get.find<RecommendSizeController>();
+  final _productController = Get.find<ProductController>();
+  final isLoggedIn = false.obs;
+  final isSeller = false.obs;
 
   bool get isUserLoggedIn => isLoggedIn.value;
   bool get isSellerUser => isSeller.value;
@@ -24,17 +23,18 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    Future.delayed(const Duration(milliseconds: 100), () => checkLoginStatus());
+    Future.delayed(const Duration(milliseconds: 500), () async {
+      await checkLoginStatus();
+    });
   }
 
   Future<void> checkLoginStatus() async {
     try {
-      bool isUserAlreadyLogged = await userController.isuserLoggedStatusOn();
+      bool isUserAlreadyLogged = _userController.userLoggedStatusOn.value;
       if (isUserAlreadyLogged) {
         isLoggedIn.value = true;
-        isSeller.value = userController.userType.value == "seller";
+        isSeller.value = _userController.userType.value == "seller";
 
-        // Only navigate if we're on the login screen
         if (Get.currentRoute == '/') {
           if (isSeller.value) {
             await Get.offAllNamed('/seller-home');
@@ -45,6 +45,7 @@ class AuthController extends GetxController {
       } else {
         isLoggedIn.value = false;
         isSeller.value = false;
+
         // Only navigate to login if we're not already there and not signing up
         if (Get.currentRoute != '/' && Get.currentRoute != '/signup') {
           await Get.offAllNamed('/');
@@ -55,19 +56,6 @@ class AuthController extends GetxController {
       isLoggedIn.value = false;
       isSeller.value = false;
     }
-  }
-
-  bool canAccessRoute(String route) {
-    if (!isLoggedIn.value) {
-      return route == '/' || route == '/signup';
-    }
-
-    // Seller-specific routes
-    if (route.startsWith('/seller')) {
-      return isSeller.value;
-    }
-
-    return true;
   }
 
   Future<void> login(String username, String password) async {
@@ -84,10 +72,10 @@ class AuthController extends GetxController {
     }
 
     try {
-      await userController.loadUserData(username, password);
-      final storedUsername = userController.username.value;
-      final userLoggedStatusOn = userController.userLoggedStatusOn.value;
-      final userType = userController.userType.value;
+      await _userController.loadUserData(username, password);
+      final storedUsername = _userController.username.value;
+      final userType = _userController.userType.value;
+      final userLoggedStatusOn = _userController.userLoggedStatusOn.value;
 
       logger.i(
         'Stored credentials - Username: $storedUsername, User Type: $userType',
@@ -98,11 +86,12 @@ class AuthController extends GetxController {
         isLoggedIn.value = true;
         isSeller.value = userType == "seller";
 
-        await productController.fetchProducts();
+        await _productController.fetchProducts();
         if (isSeller.value) {
+          await _productController.fetchProducts();
           await Get.offAllNamed('/seller-home');
         } else {
-          await measurementController.loadMeasurements();
+          await _measurementController.loadMeasurements();
           await Get.offAllNamed('/home');
         }
 
@@ -142,7 +131,7 @@ class AuthController extends GetxController {
     logger.d('New user - Username: $username, UserType: $userType');
 
     try {
-      bool userLoggedStatusOn = await userController.saveUserData(
+      bool userLoggedStatusOn = await _userController.saveUserData(
         username,
         userType,
         password,
@@ -176,11 +165,11 @@ class AuthController extends GetxController {
   }
 
   void logout() {
-    logger.i('Logging out user: ${userController.username.value}');
-    userController.clearUserData();
-    measurementController.clearMeasurements();
-    sizeRecomController.clearSizeRecom();
-    productController.clearProducts();
+    logger.i('Logging out user: ${_userController.username.value}');
+    _userController.clearUserData();
+    _measurementController.clearMeasurements();
+    _sizeRecomController.clearSizeRecom();
+    _productController.clearProducts();
     isLoggedIn.value = false;
     isSeller.value = false;
     Get.offAllNamed('/');

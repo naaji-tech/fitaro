@@ -94,7 +94,7 @@ class UserController extends GetxController {
     pref.clear();
   }
 
-  Future<bool> isuserLoggedStatusOn() async {
+  Future<void> isuserLoggedStatusOn() async {
     final prefs = await SharedPreferences.getInstance();
     final userLoggedStatusOn = prefs.getBool('userLoggedStatusOn');
     final username = prefs.getString('username');
@@ -102,6 +102,5 @@ class UserController extends GetxController {
     this.username.value = username ?? '';
     this.userType.value = userType ?? '';
     this.userLoggedStatusOn.value = userLoggedStatusOn ?? false;
-    return this.userLoggedStatusOn.value;
   }
 }

@@ -1,14 +1,13 @@
 import 'package:fitaro/views/seller/seller_add_sizes_screen.dart';
 import 'package:fitaro/views/seller/seller_main_screen.dart';
 import 'package:fitaro/views/seller/seller_product_details_screen.dart';
+import 'package:fitaro/views/server_error_screen.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'views/login_screen.dart';
 import 'views/signup_screen.dart';
-import 'views/user/main_screen.dart';
-import 'views/measurements_screen.dart';
-import 'views/user/product_details_screen.dart';
-import 'views/measurement_input_screen.dart';
+import 'views/user/user_main_screen.dart';
+import 'views/user/user_product_details_screen.dart';
 import 'views/seller/seller_add_product_screen.dart';
 import 'views/seller/seller_add_product_manual_screen.dart';
 import 'controllers/auth_controller.dart';
@@ -18,20 +17,11 @@ class AuthMiddleware extends GetMiddleware {
   RouteSettings? redirect(String? route) {
     final authController = Get.find<AuthController>();
 
-    // Allow access to login and signup without authentication
-    if (route == '/' || route == '/signup') {
-      return null;
-    }
+    if (route == '/' || route == '/signup') return null;
 
-    // Check if user is logged in
-    if (!authController.isUserLoggedIn) {
-      return const RouteSettings(name: '/');
-    }
+    if (!authController.isUserLoggedIn) return const RouteSettings(name: '/');
 
-    // Check seller-specific routes
-    if (route!.startsWith('/seller') && !authController.isSellerUser) {
-      return const RouteSettings(name: '/');
-    }
+    if (route!.startsWith('/seller') && !authController.isSellerUser) return const RouteSettings(name: '/');
 
     return null;
   }
@@ -40,24 +30,15 @@ class AuthMiddleware extends GetMiddleware {
 final List<GetPage> appRoutes = [
   GetPage(name: '/', page: () => LoginScreen()),
   GetPage(name: '/signup', page: () => SignupScreen()),
+  GetPage(name: "/server-down", page: () => ServerErrorScreen()),
   GetPage(
     name: '/home',
-    page: () => MainScreen(),
-    middlewares: [AuthMiddleware()],
-  ),
-  GetPage(
-    name: '/measurements',
-    page: () => MeasurementsScreen(),
+    page: () => UserMainScreen(),
     middlewares: [AuthMiddleware()],
   ),
   GetPage(
     name: '/product-details',
-    page: () => ProductDetailsScreen(),
-    middlewares: [AuthMiddleware()],
-  ),
-  GetPage(
-    name: '/measurement-input',
-    page: () => MeasurementInputScreen(),
+    page: () => UserProductDetailsScreen(),
     middlewares: [AuthMiddleware()],
   ),
   GetPage(

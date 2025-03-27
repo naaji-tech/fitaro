@@ -1,6 +1,7 @@
+import 'package:fitaro/controllers/backend_server_controller.dart';
 import 'package:fitaro/controllers/product_controller.dart';
 import 'package:fitaro/controllers/product_measurement_controller.dart';
-import 'package:fitaro/controllers/size_recom_controller.dart';
+import 'package:fitaro/controllers/recommend_size_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'routes.dart';
@@ -13,18 +14,27 @@ void main() async {
 
   Get.testMode = true;
 
-  Get.put(ProductMeasurementController());
+  final backendServerController = Get.put(BackendServerController());
   Get.put(UserMeasurementController());
   Get.put(ProductController());
-  Get.put(SizeRecomController());
+  Get.put(ProductMeasurementController());
+  Get.put(RecommendSizeController());
   Get.put(UserController());
   Get.put(AuthController());
 
-  runApp(const FitaroApp());
+  await backendServerController.checkServerConnection();
+
+  runApp(
+    FitaroApp(
+      isServerConnected: backendServerController.isServerConnected.value,
+    ),
+  );
 }
 
 class FitaroApp extends StatelessWidget {
-  const FitaroApp({super.key});
+  final bool isServerConnected;
+
+  const FitaroApp({super.key, required this.isServerConnected});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +45,7 @@ class FitaroApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey),
         fontFamily: 'Roboto',
       ),
-      initialRoute: '/',
+      initialRoute: isServerConnected ? '/' : '/server-down',
       getPages: appRoutes,
       defaultTransition: Transition.native,
       transitionDuration: const Duration(milliseconds: 800),

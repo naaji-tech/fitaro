@@ -4,14 +4,14 @@ import 'package:fitaro/widgets/network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ShopScreenContent extends StatefulWidget {
-  const ShopScreenContent({super.key});
+class UserShopScreenContent extends StatefulWidget {
+  const UserShopScreenContent({super.key});
 
   @override
-  State<ShopScreenContent> createState() => _ShopScreenContentState();
+  State<UserShopScreenContent> createState() => _UserShopScreenContentState();
 }
 
-class _ShopScreenContentState extends State<ShopScreenContent> {
+class _UserShopScreenContentState extends State<UserShopScreenContent> {
   final ProductController _productController = Get.find<ProductController>();
   int _itemCount = 0;
   List<dynamic> _products = [];
@@ -91,7 +91,9 @@ class _ShopScreenContentState extends State<ShopScreenContent> {
                                 ),
                               ),
                               child: Center(
-                                child: NetworkImageWidget(imageUrl: _products[index]['productImageUrl']),
+                                child: NetworkImageWidget(
+                                  imageUrl: _products[index]['productImageUrl'],
+                                ),
                               ),
                             ),
                           ),

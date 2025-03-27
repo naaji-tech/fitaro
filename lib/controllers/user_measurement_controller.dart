@@ -18,9 +18,9 @@ class UserMeasurementController extends GetxController {
     loadMeasurements();
   }
 
-  Future<void> detectMeasurements(XFile image, double userHeight) async {
+  Future<void> scanUserMeasurements(XFile image, double userHeight) async {
     try {
-      logger.i('Detecting measurements...');
+      logger.i('Scan user measurements...');
       final prefs = await SharedPreferences.getInstance();
       final username = prefs.getString("username") ?? "";
 
@@ -38,6 +38,8 @@ class UserMeasurementController extends GetxController {
         return;
       }
 
+      logger.i("Scan user measurements success.");
+
       final resBody = json.decode(res.body);
 
       if (resBody["data"].isNotEmpty) {
@@ -53,7 +55,7 @@ class UserMeasurementController extends GetxController {
                 .toList();
         hasMeasurements.value = true;
       }
-      logger.i('Detected measurements: $measurements');
+      logger.d('Scaned user measurements: $measurements');
     } catch (e) {
       logger.e('Exception occurred: $e');
     }
@@ -61,7 +63,7 @@ class UserMeasurementController extends GetxController {
 
   Future<void> loadMeasurements() async {
     try {
-      logger.i('Loading measurements...');
+      logger.i('Loading user measurements...');
 
       final prefs = await SharedPreferences.getInstance();
       final username = prefs.getString("username") ?? "";
@@ -71,7 +73,7 @@ class UserMeasurementController extends GetxController {
         return;
       }
 
-      logger.i("get user measurements called success.");
+      logger.i("Loading user measurements success.");
 
       final jsonData = json.decode(response.body);
 
@@ -88,7 +90,7 @@ class UserMeasurementController extends GetxController {
                 .toList();
         hasMeasurements.value = true;
       }
-      logger.i('Loaded measurements: $measurements');
+      logger.d('Loaded measurements: $measurements');
     } catch (e) {
       logger.e('Exception occurred: $e');
     }
@@ -97,5 +99,6 @@ class UserMeasurementController extends GetxController {
   void clearMeasurements() {
     measurements.clear();
     hasMeasurements.value = false;
+    logger.i("Clear user measurements success.");
   }
 }

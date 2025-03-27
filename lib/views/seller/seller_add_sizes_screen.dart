@@ -157,7 +157,7 @@ class _SellerAddSizesScreenState extends State<SellerAddSizesScreen> {
                 text: "Submit",
                 onPressed: () {
                   logger.i("Submit pressed.");
-                  _productController.addProductMeasurementsManual();
+                  _productController.addProductAndMeasurementsManual();
                   _productController.clearProductData();
                   _productController.clearProductMeasurementData();
                   _productController.fetchProducts();

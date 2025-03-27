@@ -173,7 +173,7 @@ class _UserMeasurementScreenContentState
 
       if (image != null) {
         // add new user measurements
-        measurementController.detectMeasurements(
+        measurementController.scanUserMeasurements(
           image,
           double.parse(_userHeightController.text),
         );

@@ -13,12 +13,9 @@ class MyHeadingAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 20),
-        child: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black, size: 40),
-          onPressed: onPressed,
-        ),
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back, color: Colors.black, size: 40),
+        onPressed: onPressed,
       ),
       title: Text(
         heading,

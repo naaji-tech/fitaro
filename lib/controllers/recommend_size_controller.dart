@@ -8,18 +8,18 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SizeRecomController extends GetxController {
-  var sizeRecom = ''.obs;
-  var hasGotSizeRecom = false.obs;
+class RecommendSizeController extends GetxController {
+  var recommendSize = ''.obs;
+  var hasGotRecommendSize = false.obs;
 
   void setSizeRecom(String size, bool hasSizeRecom) {
-    sizeRecom.value = size;
-    hasGotSizeRecom.value = hasSizeRecom;
+    recommendSize.value = size;
+    hasGotRecommendSize.value = hasSizeRecom;
   }
 
   void clearSizeRecom() {
-    sizeRecom.value = '';
-    hasGotSizeRecom.value = false;
+    recommendSize.value = '';
+    hasGotRecommendSize.value = false;
   }
 
   Future<void> fetchSizeRecomByOldMesurement(String productId) async {
@@ -37,8 +37,8 @@ class SizeRecomController extends GetxController {
 
       final resBody = json.decode(response.body);
 
-      sizeRecom.value = resBody["data"]["recommendSize"];
-      hasGotSizeRecom.value = true;
+      recommendSize.value = resBody["data"]["recommendSize"];
+      hasGotRecommendSize.value = true;
 
       logger.i('Size recommendation fetched successfully');
     } catch (e) {
@@ -74,10 +74,10 @@ class SizeRecomController extends GetxController {
 
       final resBody = json.decode(res.body);
 
-      sizeRecom.value = resBody["data"]["recommendSize"];
-      hasGotSizeRecom.value = true;
+      recommendSize.value = resBody["data"]["recommendSize"];
+      hasGotRecommendSize.value = true;
 
-      logger.d("recommendSize: ${sizeRecom.value}");
+      logger.d("recommendSize: ${recommendSize.value}");
       logger.i('Size recommendation fetched successfully');
     } catch (e) {
       logger.e('Exception occurred: $e');

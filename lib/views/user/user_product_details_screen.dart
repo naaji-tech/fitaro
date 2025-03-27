@@ -1,20 +1,21 @@
-import 'package:fitaro/controllers/size_recom_controller.dart';
+import 'package:fitaro/controllers/recommend_size_controller.dart';
 import 'package:fitaro/logger/log.dart';
 import 'package:fitaro/widgets/network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ProductDetailsScreen extends StatefulWidget {
-  const ProductDetailsScreen({super.key});
+class UserProductDetailsScreen extends StatefulWidget {
+  const UserProductDetailsScreen({super.key});
 
   @override
-  State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
+  State<UserProductDetailsScreen> createState() =>
+      _UserProductDetailsScreenState();
 }
 
-class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
-  final SizeRecomController sizeRecomController =
-      Get.find<SizeRecomController>();
+class _UserProductDetailsScreenState extends State<UserProductDetailsScreen> {
+  final RecommendSizeController sizeRecomController =
+      Get.find<RecommendSizeController>();
   final TextEditingController _userHeightController = TextEditingController();
   final product =
       Get.arguments ??
@@ -33,7 +34,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       );
 
       Get.back(closeOverlays: true);
-      if (sizeRecomController.hasGotSizeRecom.value) {
+      if (sizeRecomController.hasGotRecommendSize.value) {
         Get.snackbar(
           'Success',
           'Measurements updated successfully',
@@ -83,7 +84,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         );
 
         Get.back(closeOverlays: true);
-        if (sizeRecomController.hasGotSizeRecom.value) {
+        if (sizeRecomController.hasGotRecommendSize.value) {
           Get.snackbar(
             'Success',
             'Measurements updated successfully',
@@ -380,7 +381,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         // Recommended Size or Fit Check Button
                         Obx(
                           () =>
-                              sizeRecomController.hasGotSizeRecom.value
+                              sizeRecomController.hasGotRecommendSize.value
                                   ? Container(
                                     padding: EdgeInsets.all(12),
                                     width: double.infinity,
@@ -413,7 +414,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         ),
                                         SizedBox(height: 8),
                                         Text(
-                                          sizeRecomController.sizeRecom.value,
+                                          sizeRecomController
+                                              .recommendSize
+                                              .value,
                                           style: TextStyle(
                                             fontSize: 32,
                                             fontWeight: FontWeight.bold,
@@ -450,7 +453,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         SizedBox(height: 20),
                         Obx(
                           () =>
-                              sizeRecomController.hasGotSizeRecom.value
+                              sizeRecomController.hasGotRecommendSize.value
                                   ? ElevatedButton(
                                     onPressed: () {
                                       Get.snackbar(

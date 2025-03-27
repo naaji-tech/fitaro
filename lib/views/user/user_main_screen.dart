@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:fitaro/views/user/home_screen.dart';
-import 'package:fitaro/views/user/shop_screen.dart';
+import 'package:fitaro/views/user/user_home_screen.dart';
+import 'package:fitaro/views/user/user_shop_screen.dart';
 import 'package:fitaro/views/user/user_measurements_screen.dart';
 import 'package:fitaro/views/profile_screen.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+class UserMainScreen extends StatefulWidget {
+  const UserMainScreen({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<UserMainScreen> createState() => _UserMainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _UserMainScreenState extends State<UserMainScreen> {
   int _currentIndex = 0;
   String _currentAppBarHeader = "Home";
   List<String> appBarHeader = ["Home", "Shop", "User\nMeasurements", "Profile"];
   final PageController _pageController = PageController();
 
   final List<Widget> _screens = [
-    HomeScreenContent(),
-    ShopScreenContent(),
+    UserHomeScreenContent(),
+    UserShopScreenContent(),
     UserMeasurementScreenContent(),
     ProfileScreenContent(),
   ];
