@@ -36,7 +36,7 @@ class _UserMeasurementScreenContentState
                 SizedBox(height: 20),
                 ListTile(
                   leading: Icon(
-                    Icons.photo_library,
+                    Icons.photo_library_outlined,
                     color: const Color.fromARGB(255, 0, 0, 0),
                   ),
                   title: Text("Upload from Gallery"),
@@ -44,7 +44,7 @@ class _UserMeasurementScreenContentState
                 ),
                 ListTile(
                   leading: Icon(
-                    Icons.camera_alt,
+                    Icons.camera_alt_outlined,
                     color: const Color.fromARGB(255, 0, 0, 0),
                   ),
                   title: Text("Take Photo"),

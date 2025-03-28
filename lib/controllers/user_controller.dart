@@ -15,7 +15,7 @@ class UserController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    isuserLoggedStatusOn();
+    _loadUserLoggedStatus();
   }
 
   void setUserData({required String username, required String userType}) {
@@ -30,30 +30,21 @@ class UserController extends GetxController {
   ) async {
     logger.i('Saving user data - Username: $username, UserType: $userType');
 
-    final response = await http.post(
-      Uri.parse(signupUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'username': username,
-        'password': password,
-        'userType': userType,
-      }),
+    final response = await _postRequest(
+      url: signupUrl,
+      body: {'username': username, 'password': password, 'userType': userType},
     );
 
-    if (response.statusCode != HttpStatus.created) {
-      logger.e('Failed to save user data: ${response.body}');
+    if (response == null || response.statusCode != HttpStatus.created) {
+      logger.e('Failed to save user data: ${response?.body}');
       return false;
     }
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('username', username);
-    await prefs.setString('userType', userType);
-    await prefs.setBool("userLoggedStatusOn", true);
-
-    this.username.value = username;
-    this.userType.value = userType;
-    userLoggedStatusOn.value = true;
-
+    await _saveToPreferences(
+      username: username,
+      userType: userType,
+      loggedIn: true,
+    );
     logger.i('User data saved successfully');
     return true;
   }
@@ -61,28 +52,23 @@ class UserController extends GetxController {
   Future<void> loadUserData(String username, String password) async {
     logger.i('Loading user data...');
 
-    final response = await http.post(
-      Uri.parse("$loginUrl?username=$username&password=$password"),
-      headers: {'Content-Type': 'application/json'},
+    final response = await _postRequest(
+      url: "$loginUrl?username=$username&password=$password",
     );
 
-    if (response.statusCode != HttpStatus.accepted) {
-      logger.e('Failed to save user data: ${response.body}');
+    if (response == null || response.statusCode != HttpStatus.accepted) {
+      logger.e('Failed to load user data: ${response?.body}');
       return;
     }
 
     final resBody = jsonDecode(response.body);
     final userType = resBody['data']['userType'];
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('username', username);
-    await prefs.setString('userType', userType);
-    await prefs.setBool("userLoggedStatusOn", true);
-
-    this.username.value = username;
-    this.userType.value = userType;
-    userLoggedStatusOn.value = true;
-
+    await _saveToPreferences(
+      username: username,
+      userType: userType,
+      loggedIn: true,
+    );
     logger.i('User data loaded successfully: $userType');
   }
 
@@ -90,17 +76,52 @@ class UserController extends GetxController {
     username.value = '';
     userType.value = '';
     userLoggedStatusOn.value = false;
-    final pref = await SharedPreferences.getInstance();
-    pref.clear();
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
+    logger.i('User data cleared');
   }
 
-  Future<void> isuserLoggedStatusOn() async {
+  Future<void> _loadUserLoggedStatus() async {
+    logger.i("Checking user logged status...");
     final prefs = await SharedPreferences.getInstance();
-    final userLoggedStatusOn = prefs.getBool('userLoggedStatusOn');
-    final username = prefs.getString('username');
-    final userType = prefs.getString('userType');
-    this.username.value = username ?? '';
-    this.userType.value = userType ?? '';
-    this.userLoggedStatusOn.value = userLoggedStatusOn ?? false;
+
+    username.value = prefs.getString('username') ?? '';
+    userType.value = prefs.getString('userType') ?? '';
+    userLoggedStatusOn.value = prefs.getBool('userLoggedStatusOn') ?? false;
+
+    logger.i("User logged status: ${userLoggedStatusOn.value}");
+  }
+
+  Future<http.Response?> _postRequest({
+    required String url,
+    Map<String, dynamic>? body,
+  }) async {
+    try {
+      return await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: body != null ? jsonEncode(body) : null,
+      );
+    } catch (e) {
+      logger.e('HTTP request failed: $e');
+      return null;
+    }
+  }
+
+  Future<void> _saveToPreferences({
+    required String username,
+    required String userType,
+    required bool loggedIn,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', username);
+    await prefs.setString('userType', userType);
+    await prefs.setBool('userLoggedStatusOn', loggedIn);
+
+    this.username.value = username;
+    this.userType.value = userType;
+    userLoggedStatusOn.value = loggedIn;
   }
 }

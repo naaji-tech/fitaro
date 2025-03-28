@@ -17,7 +17,7 @@ class RecommendSizeController extends GetxController {
     hasGotRecommendSize.value = hasSizeRecom;
   }
 
-  void clearSizeRecom() {
+  Future<void> clearSizeRecom() async {
     recommendSize.value = '';
     hasGotRecommendSize.value = false;
   }

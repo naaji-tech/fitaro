@@ -1,3 +1,4 @@
+import 'package:fitaro/widgets/custom_snackbars.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/auth_controller.dart';
@@ -11,6 +12,9 @@ class ProfileScreenContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var username = userController.username.value;
+    var userType = userController.userType.value;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
       child: Column(
@@ -28,12 +32,12 @@ class ProfileScreenContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  userController.username.value,
+                  username,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 5),
                 Text(
-                  userController.userType.value,
+                  userType,
                   style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                 ),
               ],
@@ -50,47 +54,95 @@ class ProfileScreenContent extends StatelessWidget {
             ),
             child: Column(
               children: [
-                _buildOptionTile(
-                  icon: Icons.shopping_cart_checkout,
-                  title: "My Orders",
+                BuildOptionTile(
+                  icon: Icons.person_pin_outlined,
+                  title: "Change User Name",
                   onTap: () {
-                    Get.snackbar(
-                      'Coming Soon',
-                      'Orders feature will be available soon!',
-                      backgroundColor: Color.fromRGBO(0, 0, 255, 0.3),
-                      colorText: Colors.black,
-                      duration: Duration(seconds: 1),
+                    InfoSnackbar.show(
+                      title: "Coming Soon",
+                      message:
+                          "Change username feature will be available soon!",
                     );
                   },
                 ),
                 Divider(height: 1, thickness: 1, color: Colors.grey.shade300),
-                _buildOptionTile(
-                  icon: Icons.favorite_border,
-                  title: "Wishlist",
+                BuildOptionTile(
+                  icon: Icons.password_outlined,
+                  title: "Change Password",
                   onTap: () {
-                    Get.snackbar(
-                      'Coming Soon',
-                      'Wishlist feature will be available soon!',
-                      backgroundColor: Color.fromRGBO(0, 0, 255, 0.3),
-                      colorText: Colors.black,
-                      duration: Duration(seconds: 1),
+                    InfoSnackbar.show(
+                      title: "Coming Soon",
+                      message:
+                          "Change password feature will be available soon!",
                     );
                   },
                 ),
-                Divider(height: 3, thickness: 1, color: Colors.grey.shade300),
-                _buildOptionTile(
-                  icon: Icons.local_shipping_outlined,
-                  title: "Shipping Address",
-                  onTap: () {
-                    Get.snackbar(
-                      'Coming Soon',
-                      'Shipping address feature will be available soon!',
-                      backgroundColor: Color.fromRGBO(0, 0, 255, 0.3),
-                      colorText: Colors.black,
-                      duration: Duration(seconds: 1),
-                    );
-                  },
-                ),
+                userType == "customer"
+                    ? Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: Colors.grey.shade300,
+                    )
+                    : SizedBox(),
+                userType == "customer"
+                    ? BuildOptionTile(
+                      icon: Icons.shopping_cart_checkout,
+                      title: "My Orders",
+                      onTap: () {
+                        Get.snackbar(
+                          'Coming Soon',
+                          'Orders feature will be available soon!',
+                          backgroundColor: Color.fromRGBO(0, 0, 255, 0.3),
+                          colorText: Colors.black,
+                          duration: Duration(seconds: 1),
+                        );
+                      },
+                    )
+                    : SizedBox(),
+                userType == "customer"
+                    ? Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: Colors.grey.shade300,
+                    )
+                    : SizedBox(),
+                userType == "customer"
+                    ? BuildOptionTile(
+                      icon: Icons.favorite_border,
+                      title: "Wishlist",
+                      onTap: () {
+                        Get.snackbar(
+                          'Coming Soon',
+                          'Wishlist feature will be available soon!',
+                          backgroundColor: Color.fromRGBO(0, 0, 255, 0.3),
+                          colorText: Colors.black,
+                          duration: Duration(seconds: 1),
+                        );
+                      },
+                    )
+                    : SizedBox(),
+                userType == "customer"
+                    ? Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: Colors.grey.shade300,
+                    )
+                    : SizedBox(),
+                userType == "customer"
+                    ? BuildOptionTile(
+                      icon: Icons.local_shipping_outlined,
+                      title: "Shipping Address",
+                      onTap: () {
+                        Get.snackbar(
+                          'Coming Soon',
+                          'Shipping address feature will be available soon!',
+                          backgroundColor: Color.fromRGBO(0, 0, 255, 0.3),
+                          colorText: Colors.black,
+                          duration: Duration(seconds: 1),
+                        );
+                      },
+                    )
+                    : SizedBox(),
               ],
             ),
           ),
@@ -117,12 +169,22 @@ class ProfileScreenContent extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildOptionTile({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
+class BuildOptionTile extends StatelessWidget {
+  const BuildOptionTile({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListTile(

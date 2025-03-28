@@ -1,4 +1,5 @@
 import 'package:fitaro/logger/log.dart';
+import 'package:fitaro/widgets/custom_text_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fitaro/controllers/auth_controller.dart';
@@ -59,7 +60,11 @@ class _SignupScreenState extends State<SignupScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.shopping_bag_outlined, size: 60, color: Colors.black),
+                  Icon(
+                    Icons.shopping_bag_outlined,
+                    size: 60,
+                    color: Colors.black,
+                  ),
                   SizedBox(width: 10),
 
                   // App Name
@@ -74,57 +79,35 @@ class _SignupScreenState extends State<SignupScreen> {
               SizedBox(height: 60),
 
               // Username Field
-              TextField(
+              MyIconTextField(
+                hintText: "Username",
                 controller: usernameController,
-                decoration: InputDecoration(
-                  hintText: "Username",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  prefixIcon: Icon(Icons.person),
-                ),
+                icon: Icon(Icons.person),
               ),
               SizedBox(height: 16),
 
               // Password Field
-              TextField(
+              MyIconPasswordTextField(
+                hintText: "Password",
                 controller: passwordController,
+                icon: Icon(Icons.lock),
+                suffixIconOnPressed: () {
+                  setState(() {
+                    _obscurePassword = !_obscurePassword;
+                  });
+                },
                 obscureText: _obscurePassword,
-                decoration: InputDecoration(
-                  hintText: "Password",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  prefixIcon: Icon(Icons.lock),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                  ),
-                ),
               ),
               SizedBox(height: 16),
 
               // User Type Dropdown
-              DropdownButtonFormField<String>(
-                hint: Text("User Type"),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  prefixIcon: Icon(Icons.person_outline),
-                ),
+              MyIconDropdownButtonFormField(
+                hintText: "User Type",
                 items:
                     userTypes.map((type) {
                       return DropdownMenuItem(value: type, child: Text(type));
                     }).toList(),
+                prefixIcon: Icon(Icons.person_outline),
                 onChanged: (value) {
                   setState(() {
                     selectedUserType = value!;

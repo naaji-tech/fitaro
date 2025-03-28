@@ -96,7 +96,7 @@ class UserMeasurementController extends GetxController {
     }
   }
 
-  void clearMeasurements() {
+  Future<void> clearMeasurements() async {
     measurements.clear();
     hasMeasurements.value = false;
     logger.i("Clear user measurements success.");

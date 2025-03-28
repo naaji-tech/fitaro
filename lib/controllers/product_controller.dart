@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:fitaro/logger/log.dart';
 import 'package:fitaro/util/api_config.dart';
+import 'package:fitaro/widgets/custom_snackbars.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -12,10 +13,19 @@ import 'package:image_picker/image_picker.dart';
 class ProductController extends GetxController {
   var isLoading = true.obs;
   var productList = [].obs;
-  var uploadedImageUrl = ''.obs;
 
-  var productMeasurementData = [].obs;
+  var productUploadMethod = ''.obs;
   var productData = {}.obs;
+  var uploadedImageUrl = ''.obs;
+  var productMeasurementData = [].obs;
+  var productImages =
+      {
+        "imageXS": XFile("/path/to/file"),
+        "imageS": XFile("/path/to/file"),
+        "imageM": XFile("/path/to/file"),
+        "imageL": XFile("/path/to/file"),
+        "imageXL": XFile("/path/to/file"),
+      }.obs;
 
   @override
   void onInit() {
@@ -23,20 +33,126 @@ class ProductController extends GetxController {
     fetchProducts();
   }
 
-  void addProductData(dynamic data) {
+  Future<void> addProductImage(String size, XFile image) async {
+    productImages[size] = image;
+    productImages.refresh();
+  }
+
+  Future<void> clearProductImages() async {
+    productImages.clear();
+  }
+
+  Future<void> addProductData(dynamic data) async {
     productData.assignAll(data);
   }
 
-  void clearProductData() {
+  Future<void> clearProductData() async {
     productData.clear();
   }
 
-  void addProductMeasurementData(dynamic value) {
+  Future<void> addProductMeasurementData(dynamic value) async {
     productMeasurementData.add(value);
   }
 
-  void clearProductMeasurementData() {
+  Future<void> clearProductMeasurementData() async {
     productMeasurementData.clear();
+  }
+
+  Future<void> deleteProduct(String productId) async {
+    try {
+      logger.i('Deleting product with ID: $productId...');
+      final url = '$productUrl/$productId';
+      logger.d("url: $url");
+
+      final response = await http.delete(Uri.parse(url));
+
+      if (response.statusCode == HttpStatus.ok) {
+        logger.i('Product deleted successfully.');
+        SuccesSnackbar.show(
+          title: "Success",
+          message: "Product deleted successfully",
+        );
+        fetchProducts();
+      } else {
+        logger.e('Failed to delete product: ${response.body}');
+        ErrorSnackbar.show(title: "Error", message: "Failed to delete product");
+      }
+    } catch (e) {
+      logger.e('Exception occurred while deleting product: $e');
+      ErrorSnackbar.show(
+        title: "Internal Error",
+        message: "Contact support: mohamednaaji@yahoo.com",
+      );
+    }
+  }
+
+  Future<void> addProductAndMeasurementsScan() async {
+    try {
+      logger.i('Adding product and measurements via scan...');
+      logger.d("Product details: $productData");
+      logger.d("Product images data: $productImages");
+
+      final res = await http.post(
+        Uri.parse(productUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(productData),
+      );
+
+      var resBody = json.decode(res.body);
+
+      if (res.statusCode != HttpStatus.created) {
+        logger.e('Failed to add product: $resBody');
+        ErrorSnackbar.show(
+          title: "Internal Error",
+          message: "Contact support: mohamednaaji@yahoo.com",
+        );
+        return;
+      }
+
+      logger.i("product added success");
+      SuccesSnackbar.show(
+        title: "Success",
+        message: "Product measurements added successfully",
+      );
+
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('$productMeasurementScanUrl${productData['productId']}'),
+      );
+
+      productImages.forEach((size, imageFile) async {
+        logger.d("size: $size, imageFile: ${imageFile.path}");
+        request.files.add(
+          await http.MultipartFile.fromPath(size, imageFile.path),
+        );
+      });
+
+      var res2 = await request.send();
+      var res2Body = await res2.stream.bytesToString();
+
+      if (res2.statusCode != HttpStatus.created) {
+        logger.e('Failed in product images scanning: $res2Body');
+        ErrorSnackbar.show(
+          title: "Error",
+          message: "Failed to add product measurements",
+        );
+        return;
+      }
+
+      logger.i('Product and measurements added successfully: $res2Body');
+      SuccesSnackbar.show(
+        title: "Success",
+        message: "Product measurements added successfully",
+      );
+    } catch (e) {
+      logger.e('Exception occurred: $e');
+      ErrorSnackbar.show(
+        title: "Internal Error",
+        message: "Contact support: mohamednaaji@yahoo.com",
+      );
+    }
   }
 
   Future<void> addProductAndMeasurementsManual() async {
@@ -59,12 +175,9 @@ class ProductController extends GetxController {
 
       if (res.statusCode != HttpStatus.created) {
         logger.e('Failed to add product: ${resBody.toString()}');
-        Get.snackbar(
-          'Error',
-          'Internal error: contact support: mohamednaaji@yahoo.com',
-          backgroundColor: const Color.fromRGBO(255, 0, 0, 0.3),
-          colorText: const Color.fromARGB(255, 0, 0, 0),
-          duration: Duration(seconds: 3),
+        ErrorSnackbar.show(
+          title: "Internal Error",
+          message: "Contact support: mohamednaaji@yahoo.com",
         );
         return;
       }
@@ -84,32 +197,23 @@ class ProductController extends GetxController {
 
       if (res2.statusCode != HttpStatus.created) {
         logger.e('Failed to add measurements: ${resBody2.toString()}');
-        Get.snackbar(
-          'Error',
-          'Internal error: contact support: mohamednaaji@yahoo.com',
-          backgroundColor: const Color.fromRGBO(255, 0, 0, 0.3),
-          colorText: const Color.fromARGB(255, 0, 0, 0),
-          duration: Duration(seconds: 3),
+        ErrorSnackbar.show(
+          title: "Internal Error",
+          message: "Contact support: mohamednaaji@yahoo.com",
         );
         return;
       }
 
-      Get.snackbar(
-        'Success',
-        'Product added to Inventory',
-        backgroundColor: const Color.fromRGBO(0, 255, 0, 0.3),
-        colorText: const Color.fromARGB(255, 0, 0, 0),
-        duration: Duration(seconds: 1),
+      SuccesSnackbar.show(
+        title: "Success",
+        message: "Product added to Inventory",
       );
       logger.i('Adding product and measurements success.');
     } catch (e) {
       logger.e('Exception occurred: $e');
-      Get.snackbar(
-        'Error',
-        'Internal error: contact support: mohamednaaji@yahoo.com',
-        backgroundColor: const Color.fromRGBO(255, 0, 0, 0.3),
-        colorText: const Color.fromARGB(255, 0, 0, 0),
-        duration: Duration(seconds: 3),
+      ErrorSnackbar.show(
+        title: "Internal Error",
+        message: "Contact support: mohamednaaji@yahoo.com",
       );
     }
   }
@@ -118,6 +222,13 @@ class ProductController extends GetxController {
     try {
       isLoading(true);
       logger.i('Uploading image to Google Drive...');
+
+      // put this url for the testing purpose
+      if (imageFile != null) {
+        uploadedImageUrl.value =
+            'https://drive.google.com/uc?export=view&id=14z9IasMbPwHFNYAzxUeC6X9bMgQdMnBu';
+        return;
+      }
 
       // Replace with your Google Drive API endpoint and access token
       final String googleDriveApiUrl =
@@ -200,7 +311,7 @@ class ProductController extends GetxController {
     }
   }
 
-  void clearProducts() {
+  Future<void> clearProducts() async {
     productList.clear();
     logger.i("Clear product success.");
   }

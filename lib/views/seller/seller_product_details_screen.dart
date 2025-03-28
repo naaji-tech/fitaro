@@ -1,4 +1,7 @@
+import 'package:fitaro/controllers/product_controller.dart';
 import 'package:fitaro/controllers/product_measurement_controller.dart';
+import 'package:fitaro/widgets/custom_buttons.dart';
+import 'package:fitaro/widgets/custom_snackbars.dart';
 import 'package:fitaro/widgets/network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,8 +16,9 @@ class SellerProductDetailsScreen extends StatefulWidget {
 
 class _SellerProductDetailsScreenState
     extends State<SellerProductDetailsScreen> {
-  final ProductMeasurementController _productMeasurementController =
+  final _productMeasurementController =
       Get.find<ProductMeasurementController>();
+  final _productController = Get.find<ProductController>();
   final product =
       Get.arguments ??
       {
@@ -39,9 +43,9 @@ class _SellerProductDetailsScreenState
           padding: const EdgeInsets.only(left: 20),
           child: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black, size: 40),
-            onPressed: () {
+            onPressed: () async {
+              await _productMeasurementController.clearMeasurements();
               Get.back(closeOverlays: true);
-              _productMeasurementController.clearMeasurements();
             },
           ),
         ),
@@ -61,9 +65,7 @@ class _SellerProductDetailsScreenState
               width: double.infinity,
               color: Colors.grey[100],
               child: Center(
-                child: NetworkImageWidget(
-                  imageUrl: product["productImageUrl"],
-                ),
+                child: NetworkImageWidget(imageUrl: product["productImageUrl"]),
               ),
             ),
             SizedBox(height: 20),
@@ -75,20 +77,14 @@ class _SellerProductDetailsScreenState
                 children: [
                   Text(
                     product["productName"],
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   Text(
                     "LKR ${double.parse(product["productPrice"].toString()).toStringAsFixed(2)}",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 16),
-      
+
                   // Product Features
                   Text(
                     product["productDescription"].toString().split("*")[0],
@@ -106,7 +102,7 @@ class _SellerProductDetailsScreenState
               ),
             ),
             SizedBox(height: 50),
-      
+
             // Dynamic Text Widgets from List
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
@@ -115,10 +111,7 @@ class _SellerProductDetailsScreenState
                 children: [
                   Text(
                     "Size Chart",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
                   Container(
@@ -148,63 +141,34 @@ class _SellerProductDetailsScreenState
               ),
             ),
             SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    await Get.defaultDialog(
-                      title: "Delete Product",
-                      middleText: "Are you sure?",
-                      textConfirm: "Delete",
-                      textCancel: "Cancel",
-                      confirmTextColor: Colors.white,
-                      buttonColor: Colors.red,
-                      onCancel: () {},
-                      onConfirm: () {
-                        Get.back();
-                        Get.back();
-                        Get.snackbar(
-                          'Success',
-                          'Product deleted.',
-                          backgroundColor: const Color.fromRGBO(
-                            255,
-                            0,
-                            0,
-                            0.3,
-                          ),
-                          colorText: const Color.fromARGB(255, 0, 0, 0),
-                          duration: Duration(seconds: 3),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: MyButtonBlackFull(
+                      text: "Delete",
+                      onPressed: () {
+                        _confirmDeleteOptions(product["productName"]);
+                      },
+                      color: Colors.red,
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: MyButtonBlackFull(
+                      text: "Update",
+                      onPressed: () {
+                        InfoSnackbar.show(
+                          title: "Coming Soon",
+                          message: "Update Feature coming soon",
                         );
                       },
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: Text(
-                    "Delete",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                ),
-                SizedBox(width: 40),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Text(
-                    "Update",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
             SizedBox(height: 50),
           ],
@@ -266,6 +230,52 @@ class _SellerProductDetailsScreenState
           ),
         ),
       ],
+    );
+  }
+
+  void _confirmDeleteOptions(String size) {
+    showModalBottomSheet(
+      context: context,
+      builder:
+          (context) => Container(
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Are you sure?",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: MyButtonBlackFull(
+                        text: "Cancel",
+                        onPressed: () => Get.back(),
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: MyButtonGreyFull(
+                        text: "Yes",
+                        onPressed: () async {
+                          await _productMeasurementController
+                              .deleteProductMeasurements(product["productId"]);
+                          await _productController.deleteProduct(
+                            product["productId"],
+                          );
+                          await Get.offAllNamed("/seller_home");
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+              ],
+            ),
+          ),
     );
   }
 }

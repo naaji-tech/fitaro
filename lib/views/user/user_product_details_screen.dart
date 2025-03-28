@@ -303,9 +303,9 @@ class _UserProductDetailsScreenState extends State<UserProductDetailsScreen> {
           padding: const EdgeInsets.only(left: 20),
           child: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black, size: 40),
-            onPressed: () {
+            onPressed: () async {
+              await sizeRecomController.clearSizeRecom();
               Get.back(closeOverlays: true);
-              sizeRecomController.clearSizeRecom();
             },
           ),
         ),

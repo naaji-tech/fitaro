@@ -1,6 +1,8 @@
 import 'package:fitaro/controllers/product_controller.dart';
 import 'package:fitaro/logger/log.dart';
 import 'package:fitaro/widgets/custom_app_bars.dart';
+import 'package:fitaro/widgets/custom_snackbars.dart';
+import 'package:fitaro/widgets/custom_text_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -46,131 +48,121 @@ class _SellerAddProductManualScreenState
       appBar: MyHeadingAppBar(
         heading: "Measurements",
         onPressed: () {
+          _sleeveLengthController.dispose();
+          _shoulderWidthController.dispose();
+          _chestController.dispose();
+          _waistController.dispose();
+          _bottomCircumferenceController.dispose();
+          _frontLengthController.dispose();
+          _sleeveController.dispose();
+          _measurements.clear();
           Get.offNamed("/seller-add-product-sizes");
         },
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(
-                decoration: InputDecoration(
+      body: Scrollbar(
+        thumbVisibility: true,
+        thickness: 8,
+        radius: Radius.circular(10),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                MyTextField(
                   labelText: _convertLabelFunc("sleeveLength"),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  controller: _sleeveLengthController,
+                  keyboardType: TextInputType.number,
                 ),
-                keyboardType: TextInputType.number,
-                controller: _sleeveLengthController,
-              ),
-              SizedBox(height: 16),
-              TextField(
-                decoration: InputDecoration(
+                SizedBox(height: 16),
+                MyTextField(
                   labelText: _convertLabelFunc("shoulderWidth"),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.transparent),
-                  ),
+                  controller: _shoulderWidthController,
+                  keyboardType: TextInputType.number,
                 ),
-                keyboardType: TextInputType.number,
-                controller: _shoulderWidthController,
-              ),
-              SizedBox(height: 16),
-              TextField(
-                decoration: InputDecoration(
+                SizedBox(height: 16),
+                MyTextField(
                   labelText: _convertLabelFunc("chest"),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  controller: _chestController,
+                  keyboardType: TextInputType.number,
                 ),
-                keyboardType: TextInputType.number,
-                controller: _chestController,
-              ),
-              SizedBox(height: 16),
-              TextField(
-                decoration: InputDecoration(
+                SizedBox(height: 16),
+                MyTextField(
                   labelText: _convertLabelFunc("waist"),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  controller: _waistController,
+                  keyboardType: TextInputType.number,
                 ),
-                keyboardType: TextInputType.number,
-                controller: _waistController,
-              ),
-              SizedBox(height: 16),
-              TextField(
-                decoration: InputDecoration(
+                SizedBox(height: 16),
+                MyTextField(
                   labelText: _convertLabelFunc("bottomCircumference"),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  controller: _bottomCircumferenceController,
+                  keyboardType: TextInputType.number,
                 ),
-                keyboardType: TextInputType.number,
-                controller: _bottomCircumferenceController,
-              ),
-              SizedBox(height: 16),
-              TextField(
-                decoration: InputDecoration(
+                SizedBox(height: 16),
+                MyTextField(
                   labelText: _convertLabelFunc("frontLength"),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  controller: _frontLengthController,
+                  keyboardType: TextInputType.number,
                 ),
-                keyboardType: TextInputType.number,
-                controller: _frontLengthController,
-              ),
-              SizedBox(height: 16),
-              TextField(
-                decoration: InputDecoration(
+                SizedBox(height: 16),
+                MyTextField(
                   labelText: _convertLabelFunc("sleeve"),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  controller: _sleeveController,
+                  keyboardType: TextInputType.number,
                 ),
-                keyboardType: TextInputType.number,
-                controller: _sleeveController,
-              ),
-              SizedBox(height: 50),
+                SizedBox(height: 50),
 
-              ElevatedButton(
-                onPressed: () {
-                  _measurements["productSize"] = _productSize;
-                  _measurements["sleeveLength"] = _sleeveLengthController.text;
-                  _measurements["shoulderWidth"] =
-                      _shoulderWidthController.text;
-                  _measurements["chest"] = _chestController.text;
-                  _measurements["waist"] = _waistController.text;
-                  _measurements["bottomCircumference"] =
-                      _bottomCircumferenceController.text;
-                  _measurements["frontLength"] = _frontLengthController.text;
-                  _measurements["sleeve"] = _sleeveController.text;
+                ElevatedButton(
+                  onPressed: () {
+                    if (_sleeveLengthController.text.isEmpty ||
+                        _shoulderWidthController.text.isEmpty ||
+                        _chestController.text.isEmpty ||
+                        _waistController.text.isEmpty ||
+                        _bottomCircumferenceController.text.isEmpty ||
+                        _frontLengthController.text.isEmpty ||
+                        _sleeveController.text.isEmpty) {
+                      ErrorSnackbar.show(
+                        title: "Required",
+                        message: "Please fill all fields",
+                      );
+                      return;
+                    }
 
-                  logger.d("measurements: $_measurements");
+                    _measurements["productSize"] = _productSize;
+                    _measurements["sleeveLength"] =
+                        _sleeveLengthController.text;
+                    _measurements["shoulderWidth"] =
+                        _shoulderWidthController.text;
+                    _measurements["chest"] = _chestController.text;
+                    _measurements["waist"] = _waistController.text;
+                    _measurements["bottomCircumference"] =
+                        _bottomCircumferenceController.text;
+                    _measurements["frontLength"] = _frontLengthController.text;
+                    _measurements["sleeve"] = _sleeveController.text;
 
-                  _productController.addProductMeasurementData(_measurements);
+                    logger.d("measurements: $_measurements");
 
-                  Get.snackbar(
-                    'Success',
-                    'Product measurements added',
-                    backgroundColor: Color.fromRGBO(76, 175, 80, 0.1),
-                    colorText: Colors.green,
-                    duration: Duration(seconds: 1),
-                    // snackPosition: SnackPosition.BOTTOM,
-                  );
-                  Get.offNamed('/seller-add-product-sizes');
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  minimumSize: Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    _productController.addProductMeasurementData(_measurements);
+
+                    Get.offNamed('/seller-add-product-sizes');
+                    SuccesSnackbar.show(
+                      title: "Success",
+                      message: "Product measurements added",
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                    minimumSize: Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
+                  child: Text("Done", style: TextStyle(fontSize: 18)),
                 ),
-                child: Text("Done", style: TextStyle(fontSize: 18)),
-              ),
-            ],
+                SizedBox(height: 50),
+              ],
+            ),
           ),
         ),
       ),

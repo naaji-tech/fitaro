@@ -8,3 +8,4 @@ final productMeasurementUrl =
     '${baseUrl}productMeasurementServices/v1/measurements/';
 final productMeasurementMenualUrl =
     '${baseUrl}productMeasurementServices/v1/manualMeasurements/';
+final productMeasurementScanUrl = '${baseUrl}productMeasurementServices/v1/scanMeasurements/';

@@ -1,13 +1,12 @@
 import 'dart:convert';
 
-import 'package:fitaro/controllers/backend_server_controller.dart';
 import 'package:fitaro/controllers/user_measurement_controller.dart';
 import 'package:fitaro/controllers/product_controller.dart';
 import 'package:fitaro/controllers/recommend_size_controller.dart';
 import 'package:fitaro/logger/log.dart';
+import 'package:fitaro/widgets/custom_snackbars.dart';
 import 'package:get/get.dart';
 import 'user_controller.dart';
-import 'package:flutter/material.dart';
 
 class AuthController extends GetxController {
   final _userController = Get.find<UserController>();
@@ -30,7 +29,9 @@ class AuthController extends GetxController {
 
   Future<void> checkLoginStatus() async {
     try {
+      logger.i('Checking login status...');
       bool isUserAlreadyLogged = _userController.userLoggedStatusOn.value;
+      logger.i('User already logged in: $isUserAlreadyLogged');
       if (isUserAlreadyLogged) {
         isLoggedIn.value = true;
         isSeller.value = _userController.userType.value == "seller";
@@ -63,10 +64,9 @@ class AuthController extends GetxController {
     logger.i('Entered credentials - Username: $username, Password: $password');
 
     if (username.isEmpty || password.isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please enter username and password',
-        snackPosition: SnackPosition.BOTTOM,
+      ErrorSnackbar.show(
+        title: "Error",
+        message: "Please enter username and password",
       );
       return;
     }
@@ -95,29 +95,22 @@ class AuthController extends GetxController {
           await Get.offAllNamed('/home');
         }
 
-        Get.snackbar(
-          'Success',
-          'Welcome back, $username!',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Color.fromRGBO(76, 175, 80, 0.1),
-          colorText: Colors.green,
+        SuccesSnackbar.show(
+          title: "Success",
+          message: "Welcome back, $username!",
         );
       } else {
         logger.i('Login failed - Invalid credentials');
-        Get.snackbar(
-          'Error',
-          'Invalid username or password',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Color.fromRGBO(255, 0, 0, 0.1),
-          colorText: Colors.red,
+        ErrorSnackbar.show(
+          title: "Error",
+          message: "Invalid username or password",
         );
       }
     } catch (e) {
       logger.e('Login error: $e');
-      Get.snackbar(
-        'Error',
-        ': ${jsonDecode(e.toString())["message"]}',
-        snackPosition: SnackPosition.BOTTOM,
+      ErrorSnackbar.show(
+        title: "Error",
+        message: "${jsonDecode(e.toString())["message"]}",
       );
     }
   }
@@ -147,31 +140,24 @@ class AuthController extends GetxController {
         await Get.offAllNamed('/home');
       }
 
-      Get.snackbar(
-        'Success',
-        'Registration successful',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Color.fromRGBO(76, 175, 80, 0.1),
-        colorText: Colors.green,
-      );
+      SuccesSnackbar.show(title: "Success", message: "Registration successful");
     } catch (e) {
       logger.i('Registration error: $e');
-      Get.snackbar(
-        'Error',
-        'An error occurred during registration',
-        snackPosition: SnackPosition.BOTTOM,
+      ErrorSnackbar.show(
+        title: "Error",
+        message: "${jsonDecode(e.toString())["message"]}",
       );
     }
   }
 
-  void logout() {
+  void logout() async {
     logger.i('Logging out user: ${_userController.username.value}');
-    _userController.clearUserData();
-    _measurementController.clearMeasurements();
-    _sizeRecomController.clearSizeRecom();
-    _productController.clearProducts();
+    await _userController.clearUserData();
+    await _measurementController.clearMeasurements();
+    await _sizeRecomController.clearSizeRecom();
+    await _productController.clearProducts();
     isLoggedIn.value = false;
     isSeller.value = false;
-    Get.offAllNamed('/');
+    await Get.offAllNamed('/');
   }
 }

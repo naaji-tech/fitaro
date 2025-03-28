@@ -1,5 +1,5 @@
 import 'package:fitaro/views/profile_screen.dart';
-import 'package:fitaro/views/seller/product_inventory_screen.dart';
+import 'package:fitaro/views/seller/seller_product_inventory_screen.dart';
 import 'package:flutter/material.dart';
 
 class SellerMainScreen extends StatefulWidget {

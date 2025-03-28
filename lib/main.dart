@@ -1,11 +1,12 @@
-import 'package:fitaro/controllers/backend_server_controller.dart';
-import 'package:fitaro/controllers/product_controller.dart';
-import 'package:fitaro/controllers/product_measurement_controller.dart';
-import 'package:fitaro/controllers/recommend_size_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'routes.dart';
 import 'controllers/auth_controller.dart';
+import 'controllers/backend_server_controller.dart';
+import 'controllers/product_controller.dart';
+import 'controllers/product_measurement_controller.dart';
+import 'controllers/recommend_size_controller.dart';
 import 'controllers/user_controller.dart';
 import 'controllers/user_measurement_controller.dart';
 
@@ -14,12 +15,14 @@ void main() async {
 
   Get.testMode = true;
 
+  // Initialize controllers
   final backendServerController = Get.put(BackendServerController());
+
+  Get.put(UserController());
   Get.put(UserMeasurementController());
   Get.put(ProductController());
   Get.put(ProductMeasurementController());
   Get.put(RecommendSizeController());
-  Get.put(UserController());
   Get.put(AuthController());
 
   await backendServerController.checkServerConnection();

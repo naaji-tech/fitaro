@@ -1,4 +1,5 @@
 import 'package:fitaro/controllers/auth_controller.dart';
+import 'package:fitaro/widgets/custom_text_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -47,48 +48,32 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 60),
 
               // Username Field
-              TextField(
+              MyIconTextField(
+                hintText: "Username",
                 controller: usernameController,
-                decoration: InputDecoration(
-                  hintText: "Username",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  prefixIcon: Icon(Icons.person),
-                ),
+                icon: Icon(Icons.person),
               ),
               SizedBox(height: 16),
 
               // Password Field
-              TextField(
+              MyIconPasswordTextField(
+                hintText: "Password",
                 controller: passwordController,
+                icon: Icon(Icons.lock),
+                suffixIconOnPressed: () {
+                  setState(() {
+                    _obscurePassword = !_obscurePassword;
+                  });
+                },
                 obscureText: _obscurePassword,
-                decoration: InputDecoration(
-                  hintText: "Password",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  prefixIcon: Icon(Icons.lock),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                  ),
-                ),
               ),
+
               SizedBox(height: 24),
 
               // Login Button
               ElevatedButton(
-                onPressed: () {
-                  authController.login(
+                onPressed: () async {
+                  await authController.login(
                     usernameController.text,
                     passwordController.text,
                   );

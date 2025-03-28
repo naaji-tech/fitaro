@@ -7,12 +7,6 @@ class BackendServerController extends GetxController {
   var isServerConnected = false.obs;
   var isServerConnectionFailed = false.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    checkServerConnection();
-  }
-
   Future<void> checkServerConnection() async {
     try {
       logger.i('Checking server connection...');
