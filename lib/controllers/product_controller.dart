@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:path/path.dart';
 
 import 'package:image_picker/image_picker.dart';
 
@@ -18,14 +19,8 @@ class ProductController extends GetxController {
   var productData = {}.obs;
   var uploadedImageUrl = ''.obs;
   var productMeasurementData = [].obs;
-  var productImages =
-      {
-        "imageXS": XFile("/path/to/file"),
-        "imageS": XFile("/path/to/file"),
-        "imageM": XFile("/path/to/file"),
-        "imageL": XFile("/path/to/file"),
-        "imageXL": XFile("/path/to/file"),
-      }.obs;
+  var productImages = [].obs;
+  var sizes = ''.obs;
 
   @override
   void onInit() {
@@ -34,12 +29,13 @@ class ProductController extends GetxController {
   }
 
   Future<void> addProductImage(String size, XFile image) async {
-    productImages[size] = image;
-    productImages.refresh();
+    productImages.add(image);
+    sizes.value += "$size,";
   }
 
   Future<void> clearProductImages() async {
     productImages.clear();
+    sizes.value = '';
   }
 
   Future<void> addProductData(dynamic data) async {
@@ -91,6 +87,7 @@ class ProductController extends GetxController {
       logger.i('Adding product and measurements via scan...');
       logger.d("Product details: $productData");
       logger.d("Product images data: $productImages");
+      logger.d("Product sizes: $sizes");
 
       final res = await http.post(
         Uri.parse(productUrl),
@@ -122,12 +119,17 @@ class ProductController extends GetxController {
         Uri.parse('$productMeasurementScanUrl${productData['productId']}'),
       );
 
-      productImages.forEach((size, imageFile) async {
-        logger.d("size: $size, imageFile: ${imageFile.path}");
+      for (XFile image in productImages) {
         request.files.add(
-          await http.MultipartFile.fromPath(size, imageFile.path),
+          await http.MultipartFile.fromPath(
+            'images', // <- Same key for all files
+            image.path,
+            filename: basename(image.path),
+          ),
         );
-      });
+      }
+
+      request.fields['sizes'] = sizes.value;
 
       var res2 = await request.send();
       var res2Body = await res2.stream.bytesToString();

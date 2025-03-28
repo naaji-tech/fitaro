@@ -63,7 +63,7 @@ class _SellerAddSizesScreenState extends State<SellerAddSizesScreen> {
                             "/seller-add-product-manual",
                             arguments: _productSizes[0],
                           )
-                          : _showMeasurementOptions("imageXS");
+                          : _showMeasurementOptions(_productSizes[0]);
                     },
                   ),
 
@@ -82,7 +82,7 @@ class _SellerAddSizesScreenState extends State<SellerAddSizesScreen> {
                             "/seller-add-product-manual",
                             arguments: _productSizes[1],
                           )
-                          : _showMeasurementOptions("imageS");
+                          : _showMeasurementOptions(_productSizes[1]);
                     },
                   ),
 
@@ -101,7 +101,7 @@ class _SellerAddSizesScreenState extends State<SellerAddSizesScreen> {
                             "/seller-add-product-manual",
                             arguments: _productSizes[2],
                           )
-                          : _showMeasurementOptions("imageM");
+                          : _showMeasurementOptions(_productSizes[2]);
                     },
                   ),
 
@@ -120,7 +120,7 @@ class _SellerAddSizesScreenState extends State<SellerAddSizesScreen> {
                             "/seller-add-product-manual",
                             arguments: _productSizes[3],
                           )
-                          : _showMeasurementOptions("imageL");
+                          : _showMeasurementOptions(_productSizes[3]);
                     },
                   ),
 
@@ -139,7 +139,7 @@ class _SellerAddSizesScreenState extends State<SellerAddSizesScreen> {
                             "/seller-add-product-manual",
                             arguments: _productSizes[4],
                           )
-                          : _showMeasurementOptions("imageXL");
+                          : _showMeasurementOptions(_productSizes[4]);
                     },
                   ),
 
@@ -233,7 +233,7 @@ class _SellerAddSizesScreenState extends State<SellerAddSizesScreen> {
 
         setState(() {
           _productController.addProductMeasurementData({
-            "productSize": size.split("image")[1],
+            "productSize": size,
           });
         });
 

@@ -22,7 +22,7 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    Future.delayed(const Duration(milliseconds: 500), () async {
+    Future.delayed(const Duration(milliseconds: 1000), () async {
       await checkLoginStatus();
     });
   }

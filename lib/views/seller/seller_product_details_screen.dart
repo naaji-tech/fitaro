@@ -54,124 +54,140 @@ class _SellerProductDetailsScreenState
           SizedBox(width: 40),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 20),
-            // Product Image
-            Container(
-              height: MediaQuery.of(context).size.height * 0.4,
-              width: double.infinity,
-              color: Colors.grey[100],
-              child: Center(
-                child: NetworkImageWidget(imageUrl: product["productImageUrl"]),
+      body: Scrollbar(
+        thumbVisibility: true,
+        thickness: 8,
+        radius: Radius.circular(10),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20),
+              // Product Image
+              Container(
+                height: MediaQuery.of(context).size.height * 0.4,
+                width: double.infinity,
+                color: Colors.grey[100],
+                child: Center(
+                  child: NetworkImageWidget(
+                    imageUrl: product["productImageUrl"],
+                  ),
+                ),
               ),
-            ),
-            SizedBox(height: 20),
-            // Product Details
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product["productName"],
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "LKR ${double.parse(product["productPrice"].toString()).toStringAsFixed(2)}",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 16),
-
-                  // Product Features
-                  Text(
-                    product["productDescription"].toString().split("*")[0],
-                    style: TextStyle(fontSize: 18, height: 1.5),
-                  ),
-                  Text(
-                    product["productDescription"].toString().split("*")[1],
-                    style: TextStyle(
-                      fontSize: 16,
-                      height: 1.5,
-                      fontWeight: FontWeight.bold,
+              SizedBox(height: 20),
+              // Product Details
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product["productName"],
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                    Text(
+                      "LKR ${double.parse(product["productPrice"].toString()).toStringAsFixed(2)}",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+
+                    // Product Features
+                    Text(
+                      product["productDescription"].toString().split("*")[0],
+                      style: TextStyle(fontSize: 18, height: 1.5),
+                    ),
+                    Text(
+                      product["productDescription"].toString().split("*")[1],
+                      style: TextStyle(
+                        fontSize: 16,
+                        height: 1.5,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 50),
+              SizedBox(height: 50),
 
-            // Dynamic Text Widgets from List
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Size Chart",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey.shade300),
+              // Dynamic Text Widgets from List
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Size Chart",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    child: Obx(
-                      () =>
-                          _productMeasurementController
-                                  .hasProductMeasurements
-                                  .value
-                              ? _showProductSize()
-                              : Text(
-                                "Size chart not available",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey,
+                    SizedBox(height: 10),
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: Obx(
+                        () =>
+                            _productMeasurementController
+                                    .hasProductMeasurements
+                                    .value
+                                ? _showProductSize()
+                                : Text(
+                                  "Size chart not available",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey,
+                                  ),
                                 ),
-                              ),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: MyButtonBlackFull(
-                      text: "Delete",
-                      onPressed: () {
-                        _confirmDeleteOptions(product["productName"]);
-                      },
-                      color: Colors.red,
+              SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: MyButtonBlackFull(
+                        text: "Delete",
+                        onPressed: () {
+                          _confirmDeleteOptions(product["productName"]);
+                        },
+                        color: Colors.red,
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: MyButtonBlackFull(
-                      text: "Update",
-                      onPressed: () {
-                        InfoSnackbar.show(
-                          title: "Coming Soon",
-                          message: "Update Feature coming soon",
-                        );
-                      },
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: MyButtonBlackFull(
+                        text: "Update",
+                        onPressed: () {
+                          InfoSnackbar.show(
+                            title: "Coming Soon",
+                            message: "Update Feature coming soon",
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 50),
-          ],
+              SizedBox(height: 50),
+            ],
+          ),
         ),
       ),
     );
@@ -266,7 +282,8 @@ class _SellerProductDetailsScreenState
                           await _productController.deleteProduct(
                             product["productId"],
                           );
-                          await Get.offAllNamed("/seller_home");
+                          await _productController.fetchProducts();
+                          await Get.offAllNamed("/seller-home");
                         },
                       ),
                     ),
