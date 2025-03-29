@@ -1,14 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:fitaro/controllers/user_controller.dart';
 import 'package:fitaro/logger/log.dart';
 import 'package:fitaro/util/api_config.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserMeasurementController extends GetxController {
+  final userController = Get.find<UserController>();
   final measurements = <Map<String, String>>[].obs;
   final hasMeasurements = false.obs;
 
@@ -21,8 +22,10 @@ class UserMeasurementController extends GetxController {
   Future<void> scanUserMeasurements(XFile image, double userHeight) async {
     try {
       logger.i('Scan user measurements...');
-      final prefs = await SharedPreferences.getInstance();
-      final username = prefs.getString("username") ?? "";
+      final username = userController.username.value;
+      logger.d('username: $username');
+      logger.d('Image path: ${image.path}');
+      logger.d('User height: $userHeight');
 
       final request =
           http.MultipartRequest("POST", Uri.parse(measurementUrl + username))
@@ -65,8 +68,8 @@ class UserMeasurementController extends GetxController {
     try {
       logger.i('Loading user measurements...');
 
-      final prefs = await SharedPreferences.getInstance();
-      final username = prefs.getString("username") ?? "";
+      final username = userController.username.value;
+      logger.d('username: $username');
       final response = await http.get(Uri.parse(measurementUrl + username));
 
       if (response.statusCode != HttpStatus.ok) {

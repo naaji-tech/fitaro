@@ -1,4 +1,5 @@
 import 'package:fitaro/logger/log.dart';
+import 'package:fitaro/widgets/custom_snackbars.dart';
 import 'package:fitaro/widgets/custom_text_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,22 +22,16 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void _handleSignup() {
     if (usernameController.text.isEmpty || passwordController.text.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Please fill in all fields",
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      ErrorSnackbar.show(title: "Error", message: "Please fill in all fields");
+      logger.i("Please fill in all fields");
       return;
     }
 
     logger.i("selectedUserType: $selectedUserType");
 
     if (selectedUserType == "None") {
-      Get.snackbar(
-        "Error",
-        "User Type needs to select",
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      logger.i("User Type needs to select");
+      ErrorSnackbar.show(title: "Error", message: "User Type needs to select");
       return;
     }
 
@@ -57,12 +52,12 @@ class _SignupScreenState extends State<SignupScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               // Logo
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Icon(
                     Icons.shopping_bag_outlined,
-                    size: 60,
+                    size: 110,
                     color: Colors.black,
                   ),
                   SizedBox(width: 10),
@@ -76,7 +71,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 60),
+              SizedBox(height: 40),
 
               // Username Field
               MyIconTextField(

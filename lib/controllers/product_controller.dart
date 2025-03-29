@@ -280,13 +280,7 @@ class ProductController extends GetxController {
       }
     } catch (e) {
       logger.e('Exception occurred during image upload: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to upload image',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Color.fromRGBO(255, 0, 0, 0.1),
-        colorText: Colors.red,
-      );
+      ErrorSnackbar.show(title: "Error", message: "Failed to upload image");
     } finally {
       isLoading(false);
     }

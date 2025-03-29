@@ -97,7 +97,6 @@ class _SellerMainScreenState extends State<SellerMainScreen> {
       body: PageView(
         controller: _pageController,
         onPageChanged: _onPageChanged,
-        physics: NeverScrollableScrollPhysics(),
         children: _screens,
       ),
       bottomNavigationBar: _getMyBottomNavBar(),

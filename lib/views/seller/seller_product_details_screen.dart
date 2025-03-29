@@ -1,5 +1,6 @@
 import 'package:fitaro/controllers/product_controller.dart';
 import 'package:fitaro/controllers/product_measurement_controller.dart';
+import 'package:fitaro/widgets/custom_app_bars.dart';
 import 'package:fitaro/widgets/custom_buttons.dart';
 import 'package:fitaro/widgets/custom_snackbars.dart';
 import 'package:fitaro/widgets/network_image.dart';
@@ -38,22 +39,15 @@ class _SellerProductDetailsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 20),
-          child: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.black, size: 40),
-            onPressed: () async {
-              await _productMeasurementController.clearMeasurements();
-              Get.back(closeOverlays: true);
-            },
-          ),
-        ),
-        actions: [
-          Icon(Icons.shopping_bag_outlined, color: Colors.black, size: 40),
-          SizedBox(width: 40),
-        ],
+      appBar: MyHeadingAppBar(
+        heading: product["productName"],
+        onPressed: () async {
+          await _productMeasurementController.clearMeasurements();
+          Get.back(closeOverlays: true);
+        },
+        headingSize: 20,
       ),
+
       body: Scrollbar(
         thumbVisibility: true,
         thickness: 8,
@@ -81,13 +75,6 @@ class _SellerProductDetailsScreenState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      product["productName"],
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
                     Text(
                       "LKR ${double.parse(product["productPrice"].toString()).toStringAsFixed(2)}",
                       style: TextStyle(

@@ -1,14 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:fitaro/controllers/user_controller.dart';
 import 'package:fitaro/logger/log.dart';
 import 'package:fitaro/util/api_config.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class RecommendSizeController extends GetxController {
+  final userController = Get.find<UserController>();
   var recommendSize = ''.obs;
   var hasGotRecommendSize = false.obs;
 
@@ -25,12 +26,13 @@ class RecommendSizeController extends GetxController {
   Future<void> fetchSizeRecomByOldMesurement(String productId) async {
     try {
       logger.i('Fetching size recommendation...');
+      logger.d('Product ID: $productId');
 
-      final prefs = await SharedPreferences.getInstance();
-      final username = prefs.getString("username") ?? "";
+      final username = userController.username.value;
+      logger.d('username: $username');
 
       final response = await http.get(
-        Uri.parse("$sizeRecomUrl/$username/$productId"),
+        Uri.parse("$sizeRecomUrlViaOld/$username/$productId"),
       );
 
       if (response.statusCode != HttpStatus.ok) return;
@@ -53,14 +55,17 @@ class RecommendSizeController extends GetxController {
   ) async {
     try {
       logger.i('Fetching size recommendation...');
+      logger.d('Product ID: $productId');
+      logger.d('Image path: ${image.path}');
+      logger.d('User height: $userHeight');
 
-      final prefs = await SharedPreferences.getInstance();
-      final username = prefs.getString("username") ?? "";
+      final username = userController.username.value;
+      logger.d('username: $username');
 
       final request =
           http.MultipartRequest(
               "GET",
-              Uri.parse("$sizeRecomUrl/$username/$productId"),
+              Uri.parse("$sizeRecomUrlViaScan/$username/$productId"),
             )
             ..files.add(
               await http.MultipartFile.fromPath('usrImage', image.path),

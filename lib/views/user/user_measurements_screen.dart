@@ -1,4 +1,5 @@
 import 'package:fitaro/logger/log.dart';
+import 'package:fitaro/widgets/custom_snackbars.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -108,33 +109,19 @@ class _UserMeasurementScreenContentState
                   onPressed: () {
                     logger.d("user height: ${_userHeightController.text}");
                     if (_userHeightController.text.isEmpty) {
-                      Get.snackbar(
-                        'Enter Height',
-                        'Please enter a valid height greater than zero',
-                        backgroundColor: const Color.fromARGB(
-                          255,
-                          255,
-                          255,
-                          255,
-                        ),
-                        colorText: Colors.red,
-                        duration: Duration(seconds: 2),
+                      WarningSnackbar.show(
+                        title: "Enter Height",
+                        message:
+                            "Please enter a valid height greater than zero",
                       );
                       return;
                     }
 
                     if (double.parse(_userHeightController.text) == 0.0) {
-                      Get.snackbar(
-                        'Invalid Height',
-                        'Please enter a valid height greater than zero',
-                        backgroundColor: const Color.fromARGB(
-                          255,
-                          255,
-                          255,
-                          255,
-                        ),
-                        colorText: Colors.red,
-                        duration: Duration(seconds: 2),
+                      WarningSnackbar.show(
+                        title: "Invalid Height",
+                        message:
+                            "Please enter a valid height greater than zero",
                       );
                       return;
                     }
@@ -179,12 +166,9 @@ class _UserMeasurementScreenContentState
         );
 
         Get.back();
-        Get.snackbar(
-          'Success',
-          'Measurements updated successfully',
-          backgroundColor: const Color.fromARGB(175, 134, 210, 137),
-          colorText: const Color.fromARGB(255, 3, 3, 3),
-          duration: Duration(seconds: 2),
+        SuccesSnackbar.show(
+          title: "Success",
+          message: "Measurements added successfully",
         );
       }
     } catch (e) {
@@ -198,13 +182,7 @@ class _UserMeasurementScreenContentState
             'Permission denied. Please check app permissions in settings.';
       }
 
-      Get.snackbar(
-        'Error',
-        errorMessage,
-        backgroundColor: const Color.fromARGB(185, 173, 106, 102),
-        colorText: const Color.fromARGB(255, 0, 0, 0),
-        duration: Duration(seconds: 3),
-      );
+      ErrorSnackbar.show(title: "Error", message: errorMessage);
       Get.back();
     }
   }
@@ -219,7 +197,6 @@ class _UserMeasurementScreenContentState
           Expanded(
             child: Container(
               width: double.infinity,
-              padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -229,47 +206,50 @@ class _UserMeasurementScreenContentState
                 () =>
                     measurementController.measurements.isNotEmpty
                         ? SingleChildScrollView(
-                          child: Column(
-                            children:
-                                measurementController.measurements.map((
-                                  measurement,
-                                ) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 8.0,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          measurement["name"]!
-                                              .replaceAllMapped(
-                                                RegExp(r'([A-Z])'),
-                                                (m) => ' ${m[0]}',
-                                              )
-                                              .trim()
-                                              .split(' ')
-                                              .map(
-                                                (word) =>
-                                                    word.isNotEmpty
-                                                        ? '${word[0].toUpperCase()}${word.substring(1)}'
-                                                        : '',
-                                              )
-                                              .join(' '),
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                        Text(
-                                          "${double.parse(measurement["value"].toString()).round()} cm",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              children:
+                                  measurementController.measurements.map((
+                                    measurement,
+                                  ) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 4,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            measurement["name"]!
+                                                .replaceAllMapped(
+                                                  RegExp(r'([A-Z])'),
+                                                  (m) => ' ${m[0]}',
+                                                )
+                                                .trim()
+                                                .split(' ')
+                                                .map(
+                                                  (word) =>
+                                                      word.isNotEmpty
+                                                          ? '${word[0].toUpperCase()}${word.substring(1)}'
+                                                          : '',
+                                                )
+                                                .join(' '),
+                                            style: TextStyle(fontSize: 16),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
+                                          Text(
+                                            "${double.parse(measurement["value"].toString()).round()} cm",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                            ),
                           ),
                         )
                         : Center(

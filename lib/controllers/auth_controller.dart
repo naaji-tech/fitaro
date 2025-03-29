@@ -38,8 +38,11 @@ class AuthController extends GetxController {
 
         if (Get.currentRoute == '/') {
           if (isSeller.value) {
+            await _productController.fetchProducts();
             await Get.offAllNamed('/seller-home');
           } else {
+            await _measurementController.loadMeasurements();
+            await _productController.fetchProducts();
             await Get.offAllNamed('/home');
           }
         }
@@ -86,12 +89,12 @@ class AuthController extends GetxController {
         isLoggedIn.value = true;
         isSeller.value = userType == "seller";
 
-        await _productController.fetchProducts();
         if (isSeller.value) {
           await _productController.fetchProducts();
           await Get.offAllNamed('/seller-home');
         } else {
           await _measurementController.loadMeasurements();
+          await _productController.fetchProducts();
           await Get.offAllNamed('/home');
         }
 
@@ -135,8 +138,11 @@ class AuthController extends GetxController {
       isSeller.value = userType == "seller";
 
       if (isSeller.value) {
+        await _productController.fetchProducts();
         await Get.offAllNamed('/seller-home');
       } else {
+        await _measurementController.loadMeasurements();
+        await _productController.fetchProducts();
         await Get.offAllNamed('/home');
       }
 

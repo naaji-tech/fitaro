@@ -13,8 +13,8 @@ class UserMainScreen extends StatefulWidget {
 
 class _UserMainScreenState extends State<UserMainScreen> {
   int _currentIndex = 0;
-  String _currentAppBarHeader = "Home";
-  List<String> appBarHeader = ["Home", "Shop", "User\nMeasurements", "Profile"];
+  String _currentAppBarHeader = "Fitaro";
+  List<String> appBarHeader = ["Fitaro", "Shop", "Measurements", "Profile"];
   final PageController _pageController = PageController();
 
   final List<Widget> _screens = [
@@ -46,7 +46,6 @@ class _UserMainScreenState extends State<UserMainScreen> {
       body: PageView(
         controller: _pageController,
         onPageChanged: _onPageChanged,
-        physics: NeverScrollableScrollPhysics(),
         children: _screens,
       ),
       bottomNavigationBar: _getMyBottomNavBar(),
@@ -97,16 +96,10 @@ class _UserMainScreenState extends State<UserMainScreen> {
     return AppBar(
       title: Padding(
         padding: EdgeInsets.only(left: 20),
-        child:
-            _currentIndex != 2
-                ? Text(
-                  _currentAppBarHeader,
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                )
-                : Text(
-                  _currentAppBarHeader,
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                ),
+        child: Text(
+          _currentAppBarHeader,
+          style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+        ),
       ),
       actions: [
         Icon(Icons.shopping_bag_outlined, size: 40),

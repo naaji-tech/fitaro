@@ -104,11 +104,13 @@ class _UserShopScreenContentState extends State<UserShopScreenContent> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  _products[index]['productName'],
+                                  "${_products[index]['productName']}\n",
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w500,
                                   ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ],
                             ),

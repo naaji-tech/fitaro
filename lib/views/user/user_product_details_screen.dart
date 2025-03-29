@@ -1,5 +1,9 @@
 import 'package:fitaro/controllers/recommend_size_controller.dart';
+import 'package:fitaro/controllers/user_measurement_controller.dart';
 import 'package:fitaro/logger/log.dart';
+import 'package:fitaro/widgets/custom_app_bars.dart';
+import 'package:fitaro/widgets/custom_buttons.dart';
+import 'package:fitaro/widgets/custom_snackbars.dart';
 import 'package:fitaro/widgets/network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,8 +18,8 @@ class UserProductDetailsScreen extends StatefulWidget {
 }
 
 class _UserProductDetailsScreenState extends State<UserProductDetailsScreen> {
-  final RecommendSizeController sizeRecomController =
-      Get.find<RecommendSizeController>();
+  final sizeRecomController = Get.find<RecommendSizeController>();
+  final userMeasurementController = Get.find<UserMeasurementController>();
   final TextEditingController _userHeightController = TextEditingController();
   final product =
       Get.arguments ??
@@ -35,32 +39,20 @@ class _UserProductDetailsScreenState extends State<UserProductDetailsScreen> {
 
       Get.back(closeOverlays: true);
       if (sizeRecomController.hasGotRecommendSize.value) {
-        Get.snackbar(
-          'Success',
-          'Measurements updated successfully',
-          backgroundColor: const Color.fromRGBO(0, 255, 0, 0.3),
-          colorText: const Color.fromARGB(255, 0, 0, 0),
-          duration: Duration(seconds: 1),
+        SuccesSnackbar.show(
+          title: 'Success',
+          message: 'Measurements updated successfully',
         );
       } else {
-        Get.snackbar(
-          'Error',
-          'Internal error: contact support: mohamednaaji@yahoo.com',
-          backgroundColor: const Color.fromRGBO(255, 0, 0, 0.3),
-          colorText: const Color.fromARGB(255, 0, 0, 0),
-          duration: Duration(seconds: 3),
+        ErrorSnackbar.show(
+          title: 'Internal Error',
+          message: "Contact support: mohamednaaji@yahoo.com",
         );
       }
     } catch (e) {
       logger.d('Error picking image: $e');
       String errorMessage = 'Could not access camera. Please try again.';
-      Get.snackbar(
-        'Error',
-        errorMessage,
-        backgroundColor: const Color.fromARGB(185, 173, 106, 102),
-        colorText: const Color.fromARGB(255, 0, 0, 0),
-        duration: Duration(seconds: 3),
-      );
+      ErrorSnackbar.show(title: 'Error', message: errorMessage);
       Get.back(closeOverlays: true);
     }
   }
@@ -85,20 +77,14 @@ class _UserProductDetailsScreenState extends State<UserProductDetailsScreen> {
 
         Get.back(closeOverlays: true);
         if (sizeRecomController.hasGotRecommendSize.value) {
-          Get.snackbar(
-            'Success',
-            'Measurements updated successfully',
-            backgroundColor: const Color.fromRGBO(0, 255, 0, 0.3),
-            colorText: const Color.fromARGB(255, 0, 0, 0),
-            duration: Duration(seconds: 1),
+          SuccesSnackbar.show(
+            title: 'Success',
+            message: 'Measurements updated successfully',
           );
         } else {
-          Get.snackbar(
-            'Error',
-            'Internal error: contact support: mohamednaaji@yahoo.com',
-            backgroundColor: const Color.fromRGBO(255, 0, 0, 0.3),
-            colorText: const Color.fromARGB(255, 0, 0, 0),
-            duration: Duration(seconds: 3),
+          ErrorSnackbar.show(
+            title: 'Internal Error',
+            message: 'Contact support: mohamednaaji@yahoo.com',
           );
         }
       }
@@ -106,13 +92,7 @@ class _UserProductDetailsScreenState extends State<UserProductDetailsScreen> {
       logger.d('Error picking image: $e');
       String errorMessage = 'Could not access camera. Please try again.';
 
-      Get.snackbar(
-        'Error',
-        errorMessage,
-        backgroundColor: const Color.fromRGBO(255, 0, 0, 0.3),
-        colorText: const Color.fromARGB(255, 0, 0, 0),
-        duration: Duration(seconds: 3),
-      );
+      ErrorSnackbar.show(title: 'Error', message: errorMessage);
       Get.back(closeOverlays: true);
     }
   }
@@ -175,22 +155,26 @@ class _UserProductDetailsScreenState extends State<UserProductDetailsScreen> {
   void _showHeightInputOptions() {
     showModalBottomSheet(
       context: context,
+      isScrollControlled:
+          true, // Allow the modal to adjust for keyboard and content
       builder:
-          (context) => Container(
-            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 30),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "Enter Your Height",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 20),
-                Container(
-                  margin: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom,
+          (context) => SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 40,
+                right: 40,
+                top: 30,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 30,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Enter Your Height",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  child: TextField(
+                  SizedBox(height: 20),
+                  TextField(
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       hintText: "Enter your height in cm",
@@ -200,49 +184,45 @@ class _UserProductDetailsScreenState extends State<UserProductDetailsScreen> {
                     ),
                     controller: _userHeightController,
                   ),
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    logger.d("user height: ${_userHeightController.text}");
-                    if (_userHeightController.text.isEmpty) {
-                      Get.snackbar(
-                        'Enter Height',
-                        'Please enter a valid height greater than zero',
-                        backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
-                        colorText: Colors.red,
-                        duration: Duration(seconds: 2),
-                      );
-                      return;
-                    }
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      logger.d("user height: ${_userHeightController.text}");
+                      if (_userHeightController.text.isEmpty) {
+                        WarningSnackbar.show(
+                          title: 'Enter Height',
+                          message:
+                              'Please enter a valid height greater than zero',
+                        );
+                        return;
+                      }
 
-                    if (double.parse(_userHeightController.text) == 0.0) {
-                      Get.snackbar(
-                        'Invalid Height',
-                        'Please enter a valid height greater than zero',
-                        backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
-                        colorText: Colors.red,
-                        duration: Duration(seconds: 2),
-                      );
-                      return;
-                    }
+                      if (double.parse(_userHeightController.text) == 0.0) {
+                        WarningSnackbar.show(
+                          title: 'Invalid Height',
+                          message:
+                              'Please enter a valid height greater than zero',
+                        );
+                        return;
+                      }
 
-                    Get.back(closeOverlays: true);
-                    _showMeasurementOptions();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    minimumSize: Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      Get.back(closeOverlays: true);
+                      _showMeasurementOptions();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      minimumSize: Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      "Next",
+                      style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ),
-                  child: Text(
-                    "Next",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
     );
@@ -257,38 +237,29 @@ class _UserProductDetailsScreenState extends State<UserProductDetailsScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                ElevatedButton(
-                  onPressed: _getRecommendedSizeByOldMeasurement,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    minimumSize: Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Text(
-                    "From Old Measurements",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
+                Obx(
+                  () =>
+                      userMeasurementController.hasMeasurements.value
+                          ? Column(
+                            children: [
+                              MyButtonBlackFull(
+                                text: "From Old Measurement",
+                                onPressed: _getRecommendedSizeByOldMeasurement,
+                              ),
+                              SizedBox(height: 20),
+                            ],
+                          )
+                          : SizedBox(),
                 ),
-                SizedBox(height: 20),
-                ElevatedButton(
+
+                MyButtonBlackFull(
+                  text: "Measure Now",
                   onPressed: () {
                     Get.back(closeOverlays: true);
                     _showHeightInputOptions();
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    minimumSize: Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Text(
-                    "Measure Now",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
                 ),
+                SizedBox(height: 20),
               ],
             ),
           ),
@@ -298,21 +269,14 @@ class _UserProductDetailsScreenState extends State<UserProductDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 20),
-          child: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.black, size: 40),
-            onPressed: () async {
-              await sizeRecomController.clearSizeRecom();
-              Get.back(closeOverlays: true);
-            },
-          ),
-        ),
-        actions: [
-          Icon(Icons.shopping_bag_outlined, color: Colors.black, size: 40),
-          SizedBox(width: 40),
-        ],
+      appBar: MyHeadingAppBar(
+        heading: product["productName"],
+        onPressed: () async {
+          await sizeRecomController.clearSizeRecom();
+          await userMeasurementController.loadMeasurements();
+          Get.back(closeOverlays: true);
+        },
+        headingSize: 20,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -342,13 +306,6 @@ class _UserProductDetailsScreenState extends State<UserProductDetailsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          product["productName"],
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
                         Text(
                           "LKR ${double.parse(product["productPrice"].toString()).toStringAsFixed(2)}",
                           style: TextStyle(
@@ -434,60 +391,27 @@ class _UserProductDetailsScreenState extends State<UserProductDetailsScreen> {
                                       ],
                                     ),
                                   )
-                                  : ElevatedButton(
+                                  : MyButtonBlackFull(
+                                    text: "Find my size",
                                     onPressed: _showMesureInputOption,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.black,
-                                      foregroundColor: Colors.white,
-                                      minimumSize: Size(double.infinity, 50),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      "Fit Check",
-                                      style: TextStyle(fontSize: 16),
-                                    ),
                                   ),
                         ),
-                        SizedBox(height: 20),
-                        Obx(
-                          () =>
-                              sizeRecomController.hasGotRecommendSize.value
-                                  ? ElevatedButton(
-                                    onPressed: () {
-                                      Get.snackbar(
-                                        'Coming Soon',
-                                        'Added to cart feature will be available soon!',
-                                        backgroundColor: Color.fromRGBO(
-                                          0,
-                                          0,
-                                          255,
-                                          0.3,
-                                        ),
-                                        colorText: Colors.black,
-                                        duration: Duration(seconds: 1),
-                                      );
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.black,
-                                      foregroundColor: Colors.white,
-                                      minimumSize: Size(double.infinity, 50),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      "Add to Cart",
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  )
-                                  : SizedBox(),
+                        SizedBox(height: 15),
+
+                        MyButtonBlackFull(
+                          onPressed: () {
+                            InfoSnackbar.show(
+                              title: "Coming Soon",
+                              message:
+                                  'Added to cart feature will be available soon!',
+                            );
+                          },
+                          text: "Add to Cart",
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: 30),
+                  SizedBox(height: 50),
                 ],
               ),
             ),

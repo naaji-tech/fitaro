@@ -89,12 +89,9 @@ class ProfileScreenContent extends StatelessWidget {
                       icon: Icons.shopping_cart_checkout,
                       title: "My Orders",
                       onTap: () {
-                        Get.snackbar(
-                          'Coming Soon',
-                          'Orders feature will be available soon!',
-                          backgroundColor: Color.fromRGBO(0, 0, 255, 0.3),
-                          colorText: Colors.black,
-                          duration: Duration(seconds: 1),
+                        InfoSnackbar.show(
+                          title: "Coming Soon",
+                          message: "Orders feature will be available soon!",
                         );
                       },
                     )
@@ -111,12 +108,9 @@ class ProfileScreenContent extends StatelessWidget {
                       icon: Icons.favorite_border,
                       title: "Wishlist",
                       onTap: () {
-                        Get.snackbar(
-                          'Coming Soon',
-                          'Wishlist feature will be available soon!',
-                          backgroundColor: Color.fromRGBO(0, 0, 255, 0.3),
-                          colorText: Colors.black,
-                          duration: Duration(seconds: 1),
+                        InfoSnackbar.show(
+                          title: "Coming Soon",
+                          message: "Wishlist feature will be available soon!",
                         );
                       },
                     )
@@ -133,12 +127,10 @@ class ProfileScreenContent extends StatelessWidget {
                       icon: Icons.local_shipping_outlined,
                       title: "Shipping Address",
                       onTap: () {
-                        Get.snackbar(
-                          'Coming Soon',
-                          'Shipping address feature will be available soon!',
-                          backgroundColor: Color.fromRGBO(0, 0, 255, 0.3),
-                          colorText: Colors.black,
-                          duration: Duration(seconds: 1),
+                        InfoSnackbar.show(
+                          title: "Coming Soon",
+                          message:
+                              "Shipping address feature will be available soon!",
                         );
                       },
                     )

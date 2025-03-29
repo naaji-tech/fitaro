@@ -3,9 +3,13 @@ final signupUrl = '${baseUrl}userServices/v1/users/signup';
 final loginUrl = '${baseUrl}userServices/v1/users/login';
 final productUrl = '${baseUrl}productServices/v1/products';
 final measurementUrl = '${baseUrl}userMeasurementServices/v1/measurements/';
-final sizeRecomUrl = '${baseUrl}sizeRecommendationServices/v1/oldMeasurements';
+final sizeRecomUrlViaOld =
+    '${baseUrl}sizeRecommendationServices/v1/oldMeasurements';
+final sizeRecomUrlViaScan =
+    '${baseUrl}sizeRecommendationServices/v1/scanMeasurements';
 final productMeasurementUrl =
     '${baseUrl}productMeasurementServices/v1/measurements/';
 final productMeasurementMenualUrl =
     '${baseUrl}productMeasurementServices/v1/manualMeasurements/';
-final productMeasurementScanUrl = '${baseUrl}productMeasurementServices/v1/scanMeasurements/';
+final productMeasurementScanUrl =
+    '${baseUrl}productMeasurementServices/v1/scanMeasurements/';
