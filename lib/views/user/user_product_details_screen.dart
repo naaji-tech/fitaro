@@ -370,16 +370,30 @@ class _UserProductDetailsScreenState extends State<UserProductDetailsScreen> {
                                           ],
                                         ),
                                         SizedBox(height: 8),
-                                        Text(
-                                          sizeRecomController
-                                              .recommendSize
-                                              .value,
-                                          style: TextStyle(
-                                            fontSize: 32,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.green,
-                                          ),
-                                        ),
+                                        sizeRecomController
+                                                    .recommendSize
+                                                    .value ==
+                                                "Recommended size not available."
+                                            ? Text(
+                                              sizeRecomController
+                                                  .recommendSize
+                                                  .value,
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.green,
+                                              ),
+                                            )
+                                            : Text(
+                                              sizeRecomController
+                                                  .recommendSize
+                                                  .value,
+                                              style: TextStyle(
+                                                fontSize: 32,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.green,
+                                              ),
+                                            ),
                                         SizedBox(height: 4),
                                         Text(
                                           "Based on your measurements",

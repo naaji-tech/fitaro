@@ -30,11 +30,6 @@ class _SellerAddProductScreenState extends State<SellerAddProductScreen> {
       appBar: MyHeadingAppBar(
         heading: "Add Product",
         onPressed: () {
-          _productIdController.dispose();
-          _productNameController.dispose();
-          _productCategoryController.dispose();
-          _productPriceController.dispose();
-          _productDescriptionController.dispose();
           Get.offAllNamed("/seller-home");
         },
       ),
@@ -162,6 +157,16 @@ class _SellerAddProductScreenState extends State<SellerAddProductScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _productIdController.dispose();
+    _productNameController.dispose();
+    _productCategoryController.dispose();
+    _productPriceController.dispose();
+    _productDescriptionController.dispose();
+    super.dispose();
   }
 
   String _convertLabelFunc(String label) {

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:fitaro/logger/log.dart';
 import 'package:fitaro/util/api_config.dart';
 import 'package:fitaro/widgets/custom_snackbars.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';

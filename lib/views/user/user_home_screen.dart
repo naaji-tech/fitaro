@@ -14,23 +14,14 @@ class UserHomeScreenContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Welcome",
-                  style: TextStyle(
-                    fontSize: 28,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w500,
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "This is a smart garment size recommendation app designed to help you find the perfect size when shop online. Using AI-powered body measurement extraction and garment analysis, Fitaro ensures "
+                    "accurate size recommendations based on your unique body shape. Simply select a garment, upload your image, and get the best size suggestion instantly!",
+                    style: TextStyle(fontSize: 16, color: Colors.black87),
+                    textAlign: TextAlign.justify,
                   ),
-                ),
-                SizedBox(height: 15),
-                Text(
-                  "Fitaro is a smart garment fit recommendation app designed to help "
-                  "you find the perfect size when shop online. Using AI-powered "
-                  "body measurement extraction and garment analysis, Fitaro ensures "
-                  "accurate fit recommendations based on your unique body shape. "
-                  "Simply upload your image, select a garment, and get the best size "
-                  "suggestion instantly!",
-                  style: TextStyle(fontSize: 16, color: Colors.black54),
                 ),
                 SizedBox(height: 20),
                 Text(
@@ -43,26 +34,22 @@ class UserHomeScreenContent extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  "✓ AI-driven measurement",
-                  style: TextStyle(fontSize: 16, color: Colors.black54),
+                  "✓ AI-driven Measurement",
+                  style: TextStyle(fontSize: 16, color: Colors.black87),
                 ),
                 Text(
-                  "✓ Personalized fit recommendations",
-                  style: TextStyle(fontSize: 16, color: Colors.black54),
+                  "✓ Personalized Size Recommendations",
+                  style: TextStyle(fontSize: 16, color: Colors.black87),
                 ),
                 Text(
-                  "✓ Seamless online shopping experience",
-                  style: TextStyle(fontSize: 16, color: Colors.black54),
+                  "✓ Seamless Online Shopping Experience",
+                  style: TextStyle(fontSize: 16, color: Colors.black87),
                 ),
                 SizedBox(height: 20),
                 Text(
                   "Goodbye to size guesswork and returns\n"
                   "Get the perfect fit with Fitaro!",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black54,
-                    height: 1.5,
-                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.black87),
                 ),
               ],
             ),

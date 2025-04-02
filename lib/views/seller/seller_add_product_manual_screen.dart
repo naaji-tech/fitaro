@@ -42,19 +42,24 @@ class _SellerAddProductManualScreenState
   }
 
   @override
+  void dispose() {
+    _sleeveLengthController.dispose();
+    _shoulderWidthController.dispose();
+    _chestController.dispose();
+    _waistController.dispose();
+    _bottomCircumferenceController.dispose();
+    _frontLengthController.dispose();
+    _sleeveController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: MyHeadingAppBar(
         heading: "Measurements",
         onPressed: () {
-          _sleeveLengthController.dispose();
-          _shoulderWidthController.dispose();
-          _chestController.dispose();
-          _waistController.dispose();
-          _bottomCircumferenceController.dispose();
-          _frontLengthController.dispose();
-          _sleeveController.dispose();
           _measurements.clear();
           Get.offNamed("/seller-add-product-sizes");
         },
