@@ -2,6 +2,7 @@ import 'package:fitaro/views/seller/seller_add_sizes_screen.dart';
 import 'package:fitaro/views/seller/seller_main_screen.dart';
 import 'package:fitaro/views/seller/seller_product_details_screen.dart';
 import 'package:fitaro/views/server_error_screen.dart';
+import 'package:fitaro/views/user/user_home_screen.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'views/login_screen.dart';
@@ -64,6 +65,11 @@ final List<GetPage> appRoutes = [
   GetPage(
     name: '/seller-add-product-sizes',
     page: () => SellerAddSizesScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: '/about',
+    page: () => UserHomeScreenContent(),
     middlewares: [AuthMiddleware()],
   ),
 ];

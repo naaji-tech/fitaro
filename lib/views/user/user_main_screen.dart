@@ -14,11 +14,11 @@ class UserMainScreen extends StatefulWidget {
 class _UserMainScreenState extends State<UserMainScreen> {
   int _currentIndex = 0;
   String _currentAppBarHeader = "Fitaro";
-  List<String> appBarHeader = ["Fitaro", "Shop", "Measurements", "Profile"];
+  List<String> appBarHeader = ["Fitaro", "Measurements", "Profile"];
   final PageController _pageController = PageController();
 
   final List<Widget> _screens = [
-    UserHomeScreenContent(),
+    // UserHomeScreenContent(),
     UserShopScreenContent(),
     UserMeasurementScreenContent(),
     ProfileScreenContent(),
@@ -71,10 +71,10 @@ class _UserMainScreenState extends State<UserMainScreen> {
         showSelectedLabels: false,
         onTap: _onItemTapped,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined, size: 35),
-            label: "Home",
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.home_outlined, size: 35),
+          //   label: "Home",
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart_outlined, size: 35),
             label: "Shop",

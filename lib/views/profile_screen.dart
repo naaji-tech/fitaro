@@ -135,6 +135,14 @@ class ProfileScreenContent extends StatelessWidget {
                       },
                     )
                     : SizedBox(),
+                Divider(height: 1, thickness: 1, color: Colors.grey.shade300),
+                BuildOptionTile(
+                  icon: Icons.info_outline,
+                  title: "About",
+                  onTap: () {
+                    Get.toNamed('/about');
+                  },
+                ),
               ],
             ),
           ),
