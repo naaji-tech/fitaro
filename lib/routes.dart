@@ -2,7 +2,7 @@ import 'package:fitaro/views/seller/seller_add_sizes_screen.dart';
 import 'package:fitaro/views/seller/seller_main_screen.dart';
 import 'package:fitaro/views/seller/seller_product_details_screen.dart';
 import 'package:fitaro/views/server_error_screen.dart';
-import 'package:fitaro/views/user/user_home_screen.dart';
+import 'package:fitaro/views/about_screen.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'views/login_screen.dart';
@@ -22,7 +22,9 @@ class AuthMiddleware extends GetMiddleware {
 
     if (!authController.isUserLoggedIn) return const RouteSettings(name: '/');
 
-    if (route!.startsWith('/seller') && !authController.isSellerUser) return const RouteSettings(name: '/');
+    if (route!.startsWith('/seller') && !authController.isSellerUser) {
+      return const RouteSettings(name: '/');
+    }
 
     return null;
   }
@@ -69,7 +71,7 @@ final List<GetPage> appRoutes = [
   ),
   GetPage(
     name: '/about',
-    page: () => UserHomeScreenContent(),
+    page: () => AboutScreen(),
     middlewares: [AuthMiddleware()],
   ),
 ];

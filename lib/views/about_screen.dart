@@ -2,8 +2,8 @@ import 'package:fitaro/widgets/custom_app_bars.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 
-class UserHomeScreenContent extends StatelessWidget {
-  const UserHomeScreenContent({super.key});
+class AboutScreen extends StatelessWidget {
+  const AboutScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

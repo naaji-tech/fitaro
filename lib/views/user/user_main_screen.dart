@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fitaro/views/user/user_home_screen.dart';
 import 'package:fitaro/views/user/user_shop_screen.dart';
 import 'package:fitaro/views/user/user_measurements_screen.dart';
 import 'package:fitaro/views/profile_screen.dart';
