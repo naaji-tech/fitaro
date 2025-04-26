@@ -51,7 +51,7 @@ class FitaroApp extends StatelessWidget {
       initialRoute: isServerConnected ? '/' : '/server-down',
       getPages: appRoutes,
       defaultTransition: Transition.native,
-      transitionDuration: const Duration(milliseconds: 800),
+      transitionDuration: const Duration(milliseconds: 500),
       navigatorKey: Get.key,
     );
   }
