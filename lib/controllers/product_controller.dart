@@ -231,18 +231,16 @@ class ProductController extends GetxController {
         return;
       }
 
-      // Replace with your Google Drive API endpoint and access token
       final String googleDriveApiUrl =
           'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';
       final String accessToken =
-          'YOUR_ACCESS_TOKEN_HERE'; // Replace with your access token
+          'PUT_ACCESS_TOKEN_HERE';
 
-      // Prepare the request
       var request = http.MultipartRequest('POST', Uri.parse(googleDriveApiUrl));
       request.headers['Authorization'] = 'Bearer $accessToken';
-      request.fields['name'] = imageFile.name; // Set the file name
+      request.fields['name'] = imageFile.name;
       request.fields['parents'] =
-          '["YOUR_FOLDER_ID_HERE"]'; // Replace with your folder ID
+          '["PUT_FOLDER_ID_HERE"]';
       request.files.add(
         await http.MultipartFile.fromPath('file', imageFile.path),
       );
